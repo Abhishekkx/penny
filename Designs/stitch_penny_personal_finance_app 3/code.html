@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Penny - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-bright": "#f9f9ff",
+                      "on-tertiary": "#ffffff",
+                      "outline": "#6d7a72",
+                      "inverse-on-surface": "#ebf1ff",
+                      "on-surface-variant": "#3d4a42",
+                      "surface-container-low": "#f0f3ff",
+                      "on-primary-fixed": "#002114",
+                      "surface-container": "#e7eefe",
+                      "on-secondary-fixed-variant": "#783200",
+                      "surface-container-high": "#e2e8f8",
+                      "error-container": "#ffdad6",
+                      "primary-container": "#00855d",
+                      "secondary-container": "#fd761a",
+                      "primary-fixed": "#85f8c4",
+                      "tertiary-fixed": "#ffe086",
+                      "on-background": "#151c27",
+                      "secondary-fixed-dim": "#ffb690",
+                      "inverse-primary": "#68dba9",
+                      "on-primary": "#ffffff",
+                      "on-error": "#ffffff",
+                      "background": "#f9f9ff",
+                      "secondary-fixed": "#ffdbca",
+                      "on-surface": "#151c27",
+                      "on-secondary-container": "#5c2400",
+                      "outline-variant": "#bccac0",
+                      "on-tertiary-container": "#4e3e00",
+                      "surface": "#f9f9ff",
+                      "inverse-surface": "#2a313d",
+                      "primary-fixed-dim": "#68dba9",
+                      "primary": "#006948",
+                      "surface-container-highest": "#dce2f3",
+                      "tertiary-container": "#cda721",
+                      "error": "#ba1a1a",
+                      "on-secondary": "#ffffff",
+                      "on-primary-container": "#f5fff7",
+                      "secondary": "#9d4300",
+                      "on-primary-fixed-variant": "#005137",
+                      "on-tertiary-fixed-variant": "#574500",
+                      "surface-variant": "#dce2f3",
+                      "surface-tint": "#006c4a",
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary-fixed": "#341100",
+                      "on-error-container": "#93000a",
+                      "tertiary-fixed-dim": "#eac33e",
+                      "tertiary": "#735c00",
+                      "on-tertiary-fixed": "#231b00",
+                      "surface-dim": "#d3daea"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px",
+                      "2xl": "1rem",
+                      "3xl": "1.5rem"
+              },
+              "spacing": {
+                      "xl": "32px",
+                      "margin": "20px",
+                      "xs": "4px",
+                      "base": "4px",
+                      "md": "16px",
+                      "lg": "24px",
+                      "gutter": "16px",
+                      "sm": "8px"
+              },
+              "fontFamily": {
+                      "headline-md": [
+                              "Manrope"
+                      ],
+                      "label-md": [
+                              "Manrope"
+                      ],
+                      "body-sm": [
+                              "Manrope"
+                      ],
+                      "headline-lg": [
+                              "Manrope"
+                      ],
+                      "body-lg": [
+                              "Manrope"
+                      ],
+                      "label-sm": [
+                              "Manrope"
+                      ]
+              },
+              "fontSize": {
+                      "headline-md": [
+                              "22px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-md": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-sm": [
+                              "10px",
+                              {
+                                      "lineHeight": "12px",
+                                      "fontWeight": "500"
+                              }
+                      ]
+              },
+              boxShadow: {
+                  'ambient': '0 4px 20px -2px rgba(0, 105, 72, 0.05)',
+                  'ambient-lg': '0 8px 32px -4px rgba(0, 105, 72, 0.08)',
+                  'fab': '0 8px 24px -4px rgba(0, 105, 72, 0.2)',
+              }
+            },
+          }
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer utilities {
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+            .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+            .gradient-emerald-teal {
+                background: linear-gradient(135deg, #006948 0%, #00855d 50%, #68dba9 100%);
+            }
+            .glass-card {
+                background: rgba(255, 255, 255, 0.7);
+                backdrop-filter: blur(12px);
+                border: 1px solid rgba(255, 255, 255, 0.5);
+            }
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-lg antialiased min-h-screen pb-24">
+<!-- Top App Bar -->
+<header class="flex justify-between items-center w-full px-margin h-16 max-w-7xl mx-auto bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md sticky top-0 z-40 transition-transform duration-200">
+<div class="flex items-center gap-sm">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="A small, circular profile picture of a young professional in a brightly lit office setting, wearing neutral tones. The photo should look like a standard user avatar in a modern software application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDvBgU99YLmFODaByeehgmzbUDWXC21BUH5rASqsv98utT4-wTicPQDELsotdB1L5kPapzH8p96fQXzTG0xtlra2ho53aabWfN3Ijdnz4QjvCYYzgSraGQ2JD9w1jVydMU8AAH780DDPm6ILVw-T0JETI-4ZqQa2rr1SN-0ZxjIa0bNA8k9gq-E2wVzCH2uhnnOSOpBvV44C04il_hMnDcd1P6RkGQbVFTpO0wzMU2EE-eXbLEfecfbA"/>
+<span class="font-headline-md text-headline-md font-semibold text-primary">Penny</span>
+</div>
+<div class="hover:bg-primary-container/10 dark:hover:bg-primary-container/20 transition-colors p-sm rounded-full cursor-pointer">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed text-[24px]">notifications</span>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-margin pt-sm pb-xl space-y-xl">
+<!-- Greeting & Balance Card -->
+<section class="space-y-sm">
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Hi, Alex!</h1>
+<div class="relative overflow-hidden rounded-2xl shadow-ambient-lg p-lg gradient-emerald-teal text-on-primary">
+<!-- Decorative blurred shapes -->
+<div class="absolute -top-12 -right-12 w-32 h-32 bg-white/20 rounded-full blur-2xl"></div>
+<div class="absolute -bottom-8 -left-8 w-24 h-24 bg-tertiary-fixed/30 rounded-full blur-xl"></div>
+<div class="relative z-10">
+<p class="font-body-sm text-body-sm text-on-primary/80 mb-xs">Total Balance</p>
+<div class="font-headline-lg text-[40px] font-extrabold tracking-tight mb-md leading-none">
+                        $12,450.00
+                    </div>
+<div class="flex items-center gap-sm">
+<span class="flex items-center justify-center bg-white/20 rounded-full p-xs">
+<span class="material-symbols-outlined text-[16px] text-white" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+</span>
+<span class="font-label-md text-label-md text-white/90">+2.4% vs last month</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Summary Cards Grid -->
+<section class="grid grid-cols-3 gap-md">
+<!-- This Month -->
+<div class="bg-surface-bright rounded-2xl p-md shadow-ambient border border-outline-variant/30 flex flex-col justify-between aspect-square">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary-container text-[20px] bg-primary-container/10 p-xs rounded-full">credit_card</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant mb-xs">Spent</p>
+<p class="font-headline-md text-headline-md text-on-surface font-bold">$2,100</p>
+</div>
+</div>
+<!-- Savings -->
+<div class="bg-surface-bright rounded-2xl p-md shadow-ambient border border-outline-variant/30 flex flex-col justify-between aspect-square">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-secondary-container text-[20px] bg-secondary-container/10 p-xs rounded-full">savings</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant mb-xs">Saved</p>
+<p class="font-headline-md text-headline-md text-on-surface font-bold">$500</p>
+</div>
+</div>
+<!-- Daily Limit -->
+<div class="bg-surface-bright rounded-2xl p-md shadow-ambient border border-outline-variant/30 flex flex-col items-center justify-center aspect-square relative">
+<p class="font-label-sm text-label-sm text-on-surface-variant absolute top-md left-md">Daily Limit</p>
+<!-- Circular Progress -->
+<div class="relative w-16 h-16 mt-sm">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 36 36">
+<!-- Background Circle -->
+<path class="text-surface-variant" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="100, 100" stroke-width="3"></path>
+<!-- Progress Circle -->
+<path class="text-primary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="65, 100" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="font-label-md text-label-md font-bold text-on-surface">65%</span>
+</div>
+</div>
+</div>
+</section>
+<!-- 30-Day Trend Chart -->
+<section class="bg-surface-bright rounded-2xl p-md shadow-ambient border border-outline-variant/30">
+<div class="flex justify-between items-center mb-md">
+<h2 class="font-headline-md text-[18px] font-semibold text-on-surface">30-Day Trend</h2>
+<div class="flex gap-sm">
+<button class="font-label-sm text-label-sm px-sm py-xs rounded-full bg-primary-container/10 text-primary font-bold">In</button>
+<button class="font-label-sm text-label-sm px-sm py-xs rounded-full text-on-surface-variant">Out</button>
+</div>
+</div>
+<div class="h-32 w-full relative">
+<!-- SVG Placeholder for Mini Line Chart -->
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 100 40">
+<defs>
+<lineargradient id="gradient-fill" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#006948" stop-opacity="0.2"></stop>
+<stop offset="100%" stop-color="#006948" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0 40 L0 30 Q 10 25, 20 28 T 40 20 T 60 15 T 80 18 T 100 5 L 100 40 Z" fill="url(#gradient-fill)"></path>
+<path d="M0 30 Q 10 25, 20 28 T 40 20 T 60 15 T 80 18 T 100 5" fill="none" stroke="#006948" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</section>
+<!-- Insights Carousel -->
+<section>
+<h2 class="font-headline-md text-[18px] font-semibold text-on-surface mb-md">Insights</h2>
+<div class="flex overflow-x-auto gap-md scrollbar-hide pb-sm snap-x">
+<!-- Insight Card 1 -->
+<div class="min-w-[280px] bg-surface-container-low rounded-2xl p-md shadow-ambient border border-outline-variant/20 snap-start flex-shrink-0">
+<div class="flex items-start gap-md">
+<div class="bg-secondary-container/10 p-sm rounded-full text-secondary-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface font-bold mb-xs">Dining Out Alert</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">You've spent 20% more on coffee this week than average.</p>
+</div>
+</div>
+</div>
+<!-- Insight Card 2 -->
+<div class="min-w-[280px] bg-surface-container-low rounded-2xl p-md shadow-ambient border border-outline-variant/20 snap-start flex-shrink-0">
+<div class="flex items-start gap-md">
+<div class="bg-primary-container/10 p-sm rounded-full text-primary-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">celebration</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface font-bold mb-xs">Savings Goal</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">You're on track to hit your Emergency Fund goal by August.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-24 right-margin w-14 h-14 bg-primary text-on-primary rounded-full shadow-fab flex items-center justify-center hover:bg-primary-container/90 transition-transform active:scale-95 z-40">
+<span class="material-symbols-outlined text-[28px]">add</span>
+</button>
+<!-- Bottom Nav Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-gutter py-sm bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md rounded-t-xl md:hidden">
+<!-- Dashboard (Active) -->
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container dark:bg-primary dark:text-on-primary rounded-full px-4 py-1 hover:text-primary dark:hover:text-primary-fixed active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-md text-label-md mt-xs">Dashboard</span>
+</a>
+<!-- Analytics -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-4 py-1 hover:text-primary dark:hover:text-primary-fixed active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">insights</span>
+<span class="font-label-md text-label-md mt-xs">Analytics</span>
+</a>
+<!-- Insights -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-4 py-1 hover:text-primary dark:hover:text-primary-fixed active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">lightbulb</span>
+<span class="font-label-md text-label-md mt-xs">Insights</span>
+</a>
+<!-- Settings -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-4 py-1 hover:text-primary dark:hover:text-primary-fixed active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md mt-xs">Settings</span>
+</a>
+</nav>
+</body></html>

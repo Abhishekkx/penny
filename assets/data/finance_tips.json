@@ -1,0 +1,34 @@
+{
+  "tips": [
+    {
+      "category": "savings",
+      "title": "Follow the 50/30/20 Rule",
+      "content": "Allocate 50% of income to needs, 30% to wants, and 20% to savings and debt repayment.",
+      "priority": "high"
+    },
+    {
+      "category": "spending",
+      "title": "Track Small Expenses",
+      "content": "Small daily purchases add up quickly. Monitor them to identify unnecessary spending patterns.",
+      "priority": "medium"
+    },
+    {
+      "category": "budgeting",
+      "title": "Set Clear Financial Goals",
+      "content": "Define specific, measurable financial goals with deadlines to stay motivated.",
+      "priority": "high"
+    },
+    {
+      "category": "savings",
+      "title": "Build an Emergency Fund",
+      "content": "Aim to save 3-6 months of expenses for unexpected situations.",
+      "priority": "high"
+    },
+    {
+      "category": "spending",
+      "title": "Wait Before Big Purchases",
+      "content": "Implement a 24-48 hour waiting period for non-essential purchases to avoid impulse buying.",
+      "priority": "medium"
+    }
+  ]
+}

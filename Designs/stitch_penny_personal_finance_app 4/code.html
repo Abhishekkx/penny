@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Penny - Add Transaction</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "surface-bright": "#f9f9ff",
+                            "on-tertiary": "#ffffff",
+                            "outline": "#6d7a72",
+                            "inverse-on-surface": "#ebf1ff",
+                            "on-surface-variant": "#3d4a42",
+                            "surface-container-low": "#f0f3ff",
+                            "on-primary-fixed": "#002114",
+                            "surface-container": "#e7eefe",
+                            "on-secondary-fixed-variant": "#783200",
+                            "surface-container-high": "#e2e8f8",
+                            "error-container": "#ffdad6",
+                            "primary-container": "#00855d",
+                            "secondary-container": "#fd761a",
+                            "primary-fixed": "#85f8c4",
+                            "tertiary-fixed": "#ffe086",
+                            "on-background": "#151c27",
+                            "secondary-fixed-dim": "#ffb690",
+                            "inverse-primary": "#68dba9",
+                            "on-primary": "#ffffff",
+                            "on-error": "#ffffff",
+                            "background": "#f9f9ff",
+                            "secondary-fixed": "#ffdbca",
+                            "on-surface": "#151c27",
+                            "on-secondary-container": "#5c2400",
+                            "outline-variant": "#bccac0",
+                            "on-tertiary-container": "#4e3e00",
+                            "surface": "#f9f9ff",
+                            "inverse-surface": "#2a313d",
+                            "primary-fixed-dim": "#68dba9",
+                            "primary": "#006948",
+                            "surface-container-highest": "#dce2f3",
+                            "tertiary-container": "#cda721",
+                            "error": "#ba1a1a",
+                            "on-secondary": "#ffffff",
+                            "on-primary-container": "#f5fff7",
+                            "secondary": "#9d4300",
+                            "on-primary-fixed-variant": "#005137",
+                            "on-tertiary-fixed-variant": "#574500",
+                            "surface-variant": "#dce2f3",
+                            "surface-tint": "#006c4a",
+                            "surface-container-lowest": "#ffffff",
+                            "on-secondary-fixed": "#341100",
+                            "on-error-container": "#93000a",
+                            "tertiary-fixed-dim": "#eac33e",
+                            "tertiary": "#735c00",
+                            "on-tertiary-fixed": "#231b00",
+                            "surface-dim": "#d3daea"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "0.25rem",
+                            "lg": "0.5rem",
+                            "xl": "0.75rem",
+                            "full": "9999px"
+                    },
+                    "spacing": {
+                            "xl": "32px",
+                            "margin": "20px",
+                            "xs": "4px",
+                            "base": "4px",
+                            "md": "16px",
+                            "lg": "24px",
+                            "gutter": "16px",
+                            "sm": "8px"
+                    },
+                    "fontFamily": {
+                            "headline-md": ["Manrope"],
+                            "label-md": ["Manrope"],
+                            "body-sm": ["Manrope"],
+                            "headline-lg": ["Manrope"],
+                            "body-lg": ["Manrope"],
+                            "label-sm": ["Manrope"]
+                    },
+                    "fontSize": {
+                            "headline-md": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                            "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                            "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                            "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                            "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                            "label-sm": ["10px", {"lineHeight": "12px", "fontWeight": "500"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Custom scrollbar for web */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #dce2f3;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #bccac0;
+        }
+        
+        /* Hide number input spinners */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        /* Glassmorphism utility */
+        .glass-panel {
+            background: rgba(249, 249, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(188, 202, 192, 0.3);
+        }
+
+        /* Segmented Control Animation */
+        .segmented-control-bg {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .segment-1-active .segmented-control-bg { transform: translateX(0%); }
+        .segment-2-active .segmented-control-bg { transform: translateX(100%); }
+        .segment-3-active .segmented-control-bg { transform: translateX(200%); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-lg antialiased min-h-screen flex flex-col items-center justify-end md:justify-center overflow-hidden">
+<!-- Background Context (Simulated App Behind Bottom Sheet) -->
+<div class="fixed inset-0 w-full h-full bg-surface-container pointer-events-none opacity-50 z-0 flex flex-col pt-16 px-margin">
+<div class="w-full h-32 bg-surface-container-high rounded-xl mb-md animate-pulse"></div>
+<div class="w-full h-16 bg-surface-container-high rounded-xl mb-md animate-pulse"></div>
+<div class="w-full h-16 bg-surface-container-high rounded-xl mb-md animate-pulse"></div>
+</div>
+<!-- Scrim (Dark Overlay) -->
+<div class="fixed inset-0 bg-on-background/40 z-10 transition-opacity duration-300"></div>
+<!-- Bottom Sheet Container -->
+<main class="relative z-20 w-full max-w-lg bg-surface rounded-t-[32px] md:rounded-[32px] shadow-2xl flex flex-col h-[90vh] md:h-auto md:max-h-[85vh] overflow-hidden">
+<!-- Drag Handle (Mobile) -->
+<div class="w-full flex justify-center pt-md pb-sm md:hidden bg-surface z-30 sticky top-0">
+<div class="w-12 h-1.5 bg-outline-variant/50 rounded-full"></div>
+</div>
+<!-- Header -->
+<header class="px-lg pt-4 pb-md flex items-center justify-between sticky top-0 md:top-auto bg-surface z-20 border-b border-surface-variant">
+<div class="flex items-center gap-sm">
+<button class="w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-variant transition-colors md:hidden">
+<span class="material-symbols-outlined">close</span>
+</button>
+<h1 class="font-headline-md text-headline-md text-on-surface">Add Transaction</h1>
+</div>
+<button class="text-primary font-label-md text-label-md hover:text-primary-container transition-colors px-4 py-2 rounded-full hover:bg-primary/5">
+                Reset
+            </button>
+</header>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto px-lg py-lg space-y-xl custom-scrollbar">
+<!-- Amount Input (Hero Section) -->
+<section class="flex flex-col items-center justify-center py-sm">
+<label class="sr-only" for="amount">Transaction Amount</label>
+<div class="flex items-baseline justify-center text-primary">
+<span class="font-headline-lg text-headline-lg text-on-surface-variant mr-1">$</span>
+<input class="bg-transparent border-none p-0 text-center text-[56px] leading-[64px] font-bold text-on-surface focus:ring-0 focus:outline-none w-full max-w-[200px]" id="amount" min="0" placeholder="0.00" step="0.01" style="caret-color: #006948;" type="number" value="0.00"/>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">USD Account</p>
+</section>
+<!-- Type Selector (Segmented Control) -->
+<section class="w-full" id="type-selector">
+<div class="relative flex p-1 bg-surface-container-high rounded-full items-center segment-2-active" id="type-container">
+<!-- Sliding Background Indicator -->
+<div class="absolute left-1 top-1 bottom-1 w-[calc(33.333%-2.6px)] bg-surface rounded-full shadow-sm segmented-control-bg z-0 border border-outline-variant/10"></div>
+<button class="relative z-10 flex-1 py-2 flex items-center justify-center gap-xs font-label-md text-label-md text-on-surface-variant transition-colors" onclick="document.getElementById('type-container').className='relative flex p-1 bg-surface-container-high rounded-full items-center segment-1-active'" type="button">
+<span class="material-symbols-outlined" style="font-size: 18px;">arrow_downward</span>
+                        Income
+                    </button>
+<button class="relative z-10 flex-1 py-2 flex items-center justify-center gap-xs font-label-md text-label-md text-on-surface transition-colors" onclick="document.getElementById('type-container').className='relative flex p-1 bg-surface-container-high rounded-full items-center segment-2-active'" type="button">
+<span class="material-symbols-outlined" style="font-size: 18px;">arrow_upward</span>
+                        Expense
+                    </button>
+<button class="relative z-10 flex-1 py-2 flex items-center justify-center gap-xs font-label-md text-label-md text-on-surface-variant transition-colors" onclick="document.getElementById('type-container').className='relative flex p-1 bg-surface-container-high rounded-full items-center segment-3-active'" type="button">
+<span class="material-symbols-outlined" style="font-size: 18px;">trending_up</span>
+                        Invest
+                    </button>
+</div>
+</section>
+<!-- Category Picker -->
+<section class="space-y-md">
+<h2 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Category</h2>
+<div class="grid grid-cols-4 gap-sm">
+<!-- Food -->
+<button class="flex flex-col items-center justify-center gap-2 p-3 rounded-xl border border-surface-variant bg-surface hover:bg-surface-container transition-colors group">
+<div class="w-12 h-12 rounded-full bg-secondary-container/20 flex items-center justify-center text-secondary-container group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-weight="fill">restaurant</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface">Food</span>
+</button>
+<!-- Transport -->
+<button class="flex flex-col items-center justify-center gap-2 p-3 rounded-xl border-2 border-primary bg-surface-container-low transition-colors group">
+<div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-weight="fill">directions_car</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface font-bold">Transit</span>
+</button>
+<!-- Shopping -->
+<button class="flex flex-col items-center justify-center gap-2 p-3 rounded-xl border border-surface-variant bg-surface hover:bg-surface-container transition-colors group">
+<div class="w-12 h-12 rounded-full bg-[#E83E8C]/20 flex items-center justify-center text-[#E83E8C] group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-weight="fill">shopping_bag</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface">Shop</span>
+</button>
+<!-- Rent -->
+<button class="flex flex-col items-center justify-center gap-2 p-3 rounded-xl border border-surface-variant bg-surface hover:bg-surface-container transition-colors group">
+<div class="w-12 h-12 rounded-full bg-[#6F42C1]/20 flex items-center justify-center text-[#6F42C1] group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-weight="fill">home</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface">Housing</span>
+</button>
+<!-- Health -->
+<button class="flex flex-col items-center justify-center gap-2 p-3 rounded-xl border border-surface-variant bg-surface hover:bg-surface-container transition-colors group">
+<div class="w-12 h-12 rounded-full bg-[#20C997]/20 flex items-center justify-center text-[#20C997] group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-weight="fill">medical_services</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface">Health</span>
+</button>
+<!-- Entertainment -->
+<button class="flex flex-col items-center justify-center gap-2 p-3 rounded-xl border border-surface-variant bg-surface hover:bg-surface-container transition-colors group">
+<div class="w-12 h-12 rounded-full bg-[#0D6EFD]/20 flex items-center justify-center text-[#0D6EFD] group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-weight="fill">movie</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface">Fun</span>
+</button>
+<!-- Travel -->
+<button class="flex flex-col items-center justify-center gap-2 p-3 rounded-xl border border-surface-variant bg-surface hover:bg-surface-container transition-colors group">
+<div class="w-12 h-12 rounded-full bg-[#FD7E14]/20 flex items-center justify-center text-[#FD7E14] group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-weight="fill">flight</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface">Travel</span>
+</button>
+<!-- Other -->
+<button class="flex flex-col items-center justify-center gap-2 p-3 rounded-xl border border-surface-variant bg-surface hover:bg-surface-container transition-colors group">
+<div class="w-12 h-12 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-weight="fill">more_horiz</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface">Other</span>
+</button>
+</div>
+</section>
+<!-- Need vs Want Toggle -->
+<section class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-xl border border-surface-variant">
+<div>
+<h3 class="font-label-md text-label-md text-on-surface">Need vs Want</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-[12px]">Help tracking discretionary spending</p>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-label-md text-label-md text-on-surface">Need</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-outline after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+<span class="font-label-md text-label-md text-on-surface-variant opacity-50">Want</span>
+</div>
+</section>
+<!-- Note Field -->
+<section class="space-y-sm pb-24"> <!-- Extra padding for sticky footer -->
+<label class="font-label-md text-label-md text-on-surface-variant flex items-center gap-2" for="note">
+<span class="material-symbols-outlined" style="font-size: 18px;">notes</span>
+                    Note (Optional)
+                </label>
+<textarea class="w-full bg-surface-bright border border-surface-variant rounded-xl p-3 font-body-sm text-body-sm text-on-surface placeholder:text-on-surface-variant/50 focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none resize-none transition-all" id="note" placeholder="What was this for?" rows="2"></textarea>
+</section>
+</div>
+<!-- Sticky Footer Action -->
+<footer class="absolute bottom-0 left-0 w-full p-lg glass-panel z-30">
+<button class="w-full bg-primary text-on-primary font-headline-md text-headline-md py-4 rounded-xl shadow-lg shadow-primary/20 hover:bg-surface-tint active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">check_circle</span>
+                Save Transaction
+            </button>
+</footer>
+</main>
+<script>
+        // Simple auto-expand for textarea
+        const textarea = document.getElementById('note');
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+
+        // Amount input formatting (basic)
+        const amountInput = document.getElementById('amount');
+        amountInput.addEventListener('blur', function() {
+            if(this.value) {
+                this.value = parseFloat(this.value).toFixed(2);
+            }
+        });
+    </script>
+</body></html>

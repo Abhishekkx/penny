@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Penny - Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#f9f9ff",
+                        "on-tertiary": "#ffffff",
+                        "outline": "#6d7a72",
+                        "inverse-on-surface": "#ebf1ff",
+                        "on-surface-variant": "#3d4a42",
+                        "surface-container-low": "#f0f3ff",
+                        "on-primary-fixed": "#002114",
+                        "surface-container": "#e7eefe",
+                        "on-secondary-fixed-variant": "#783200",
+                        "surface-container-high": "#e2e8f8",
+                        "error-container": "#ffdad6",
+                        "primary-container": "#00855d",
+                        "secondary-container": "#fd761a",
+                        "primary-fixed": "#85f8c4",
+                        "tertiary-fixed": "#ffe086",
+                        "on-background": "#151c27",
+                        "secondary-fixed-dim": "#ffb690",
+                        "inverse-primary": "#68dba9",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "background": "#f9f9ff",
+                        "secondary-fixed": "#ffdbca",
+                        "on-surface": "#151c27",
+                        "on-secondary-container": "#5c2400",
+                        "outline-variant": "#bccac0",
+                        "on-tertiary-container": "#4e3e00",
+                        "surface": "#f9f9ff",
+                        "inverse-surface": "#2a313d",
+                        "primary-fixed-dim": "#68dba9",
+                        "primary": "#006948",
+                        "surface-container-highest": "#dce2f3",
+                        "tertiary-container": "#cda721",
+                        "error": "#ba1a1a",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#f5fff7",
+                        "secondary": "#9d4300",
+                        "on-primary-fixed-variant": "#005137",
+                        "on-tertiary-fixed-variant": "#574500",
+                        "surface-variant": "#dce2f3",
+                        "surface-tint": "#006c4a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#341100",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed-dim": "#eac33e",
+                        "tertiary": "#735c00",
+                        "on-tertiary-fixed": "#231b00",
+                        "surface-dim": "#d3daea"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "margin": "20px",
+                        "xs": "4px",
+                        "base": "4px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "gutter": "16px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Manrope"],
+                        "label-md": ["Manrope"],
+                        "body-sm": ["Manrope"],
+                        "headline-lg": ["Manrope"],
+                        "body-lg": ["Manrope"],
+                        "label-sm": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["22px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-sm": ["10px", { "lineHeight": "12px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #1F2937; /* Dark mode body background */
+            color: #ffffff; /* Base text color for dark mode */
+        }
+        .surface-card {
+            background-color: #374151; /* Dark mode surface */
+            box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="antialiased pb-24">
+<!-- TopAppBar (Web) -->
+<header class="hidden md:flex justify-between items-center w-full px-margin h-16 max-w-7xl mx-auto bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md border-b border-outline-variant/30 sticky top-0 z-40">
+<div class="flex items-center gap-4">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="A small, circular profile picture of a young professional in a brightly lit, modern office environment. The lighting is soft and flattering, casting gentle shadows. The color palette is composed of cool blues and greens, creating a serene and professional mood. The overall style is clean, corporate modern, and highly legible, aligning with a premium personal finance application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDj6yYPj63L2he9maX2DZ9i6kB8KkSuCKBjb2iSkcNqKUocx33DHuqBRdTwcuIpdv1K30IsKsw18aa5Q6vwUSc1wjvdhKw9fQ7lsGLoKkwh6R7xSNm8dLgecXq6VgGaZ7Jtp2hNjuQgk3VW5dereWoHC5kfJum8q7i_VGS-Ufh1fSVlvKK_H09RFaJHQYWMGKpCM8z3G3s7piXc3b4TcxATg-4LAXmGiYvd3FqxORnbUcpqsITg66rRvw"/>
+<span class="font-headline-lg text-headline-lg font-bold text-primary dark:text-primary-fixed">Penny</span>
+</div>
+<nav class="flex gap-8 items-center">
+<a class="font-label-md text-label-md text-on-surface-variant dark:text-surface-variant hover:bg-primary-container/10 dark:hover:bg-primary-container/20 transition-colors px-3 py-2 rounded-lg" href="#">Dashboard</a>
+<a class="font-label-md text-label-md text-on-surface-variant dark:text-surface-variant hover:bg-primary-container/10 dark:hover:bg-primary-container/20 transition-colors px-3 py-2 rounded-lg" href="#">Analytics</a>
+<a class="font-label-md text-label-md text-on-surface-variant dark:text-surface-variant hover:bg-primary-container/10 dark:hover:bg-primary-container/20 transition-colors px-3 py-2 rounded-lg" href="#">Insights</a>
+<a class="font-label-md text-label-md text-primary dark:text-primary-fixed hover:bg-primary-container/10 dark:hover:bg-primary-container/20 transition-colors px-3 py-2 rounded-lg scale-95 transition-transform duration-200" href="#">Settings</a>
+</nav>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-primary-container/10 dark:hover:bg-primary-container/20 transition-colors text-primary dark:text-primary-fixed">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</header>
+<!-- TopAppBar (Mobile Anchor) -->
+<header class="md:hidden flex justify-between items-center w-full px-margin h-16 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md sticky top-0 z-40 border-b border-outline-variant/30">
+<span class="font-headline-lg text-headline-lg font-bold text-primary dark:text-primary-fixed">Settings</span>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-primary-container/10 dark:hover:bg-primary-container/20 transition-colors text-primary dark:text-primary-fixed">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="max-w-3xl mx-auto px-margin md:px-0 py-lg">
+<!-- General Settings Group -->
+<section class="mb-xl">
+<h2 class="font-label-md text-label-md text-outline dark:text-outline-variant uppercase tracking-wider mb-sm pl-md">General</h2>
+<div class="surface-card rounded-xl overflow-hidden divide-y divide-outline-variant/20">
+<!-- Currency -->
+<div class="flex items-center justify-between p-md hover:bg-surface-container/5 transition-colors cursor-pointer">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline dark:text-outline-variant">payments</span>
+<span class="font-body-lg text-body-lg">Currency</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="font-body-sm text-body-sm text-outline dark:text-outline-variant">USD ($)</span>
+<span class="material-symbols-outlined text-outline dark:text-outline-variant">chevron_right</span>
+</div>
+</div>
+<!-- Theme Toggle -->
+<div class="flex items-center justify-between p-md">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline dark:text-outline-variant">dark_mode</span>
+<span class="font-body-lg text-body-lg">Dark Mode</span>
+</div>
+<!-- Toggle Switch -->
+<button aria-checked="true" class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[#1F2937] bg-primary" role="switch">
+<span aria-hidden="true" class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-5"></span>
+</button>
+</div>
+<!-- Language -->
+<div class="flex items-center justify-between p-md hover:bg-surface-container/5 transition-colors cursor-pointer">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline dark:text-outline-variant">language</span>
+<span class="font-body-lg text-body-lg">Language</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="font-body-sm text-body-sm text-outline dark:text-outline-variant">English</span>
+<span class="material-symbols-outlined text-outline dark:text-outline-variant">chevron_right</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Features Group -->
+<section class="mb-xl">
+<h2 class="font-label-md text-label-md text-outline dark:text-outline-variant uppercase tracking-wider mb-sm pl-md">Features</h2>
+<div class="surface-card rounded-xl p-md">
+<div class="flex items-center justify-between">
+<div>
+<div class="flex items-center gap-sm mb-1">
+<span class="material-symbols-outlined text-outline dark:text-outline-variant">smart_toy</span>
+<span class="font-body-lg text-body-lg">Enable AI Chat</span>
+</div>
+<p class="font-body-sm text-body-sm text-outline dark:text-outline-variant pl-8">Requires internet connection</p>
+</div>
+<!-- Toggle Switch (Off state example for contrast, though prompt doesn't specify state, leaving on for consistency with dark mode bias) -->
+<button aria-checked="true" class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[#1F2937] bg-primary" role="switch">
+<span aria-hidden="true" class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-5"></span>
+</button>
+</div>
+</div>
+</section>
+<!-- Data Management Group -->
+<section class="mb-xl">
+<h2 class="font-label-md text-label-md text-outline dark:text-outline-variant uppercase tracking-wider mb-sm pl-md">Data Management</h2>
+<div class="surface-card rounded-xl overflow-hidden divide-y divide-outline-variant/20">
+<!-- Export Data -->
+<div class="flex items-center justify-between p-md hover:bg-surface-container/5 transition-colors cursor-pointer">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline dark:text-outline-variant">download</span>
+<span class="font-body-lg text-body-lg">Export Data</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="font-body-sm text-body-sm text-outline dark:text-outline-variant">CSV/JSON</span>
+<span class="material-symbols-outlined text-outline dark:text-outline-variant">chevron_right</span>
+</div>
+</div>
+<!-- Reset Data -->
+<div class="flex items-center justify-between p-md hover:bg-error-container/10 transition-colors cursor-pointer group">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-error dark:text-[#ffb4ab]">delete_forever</span>
+<span class="font-body-lg text-body-lg text-error dark:text-[#ffb4ab]">Reset All Data</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-gutter py-sm bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md border-t border-outline-variant/30 pb-safe">
+<!-- Dashboard -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-4 py-1 hover:text-primary dark:hover:text-primary-fixed" href="#">
+<span class="material-symbols-outlined mb-1">dashboard</span>
+<span class="font-label-sm text-label-sm">Dashboard</span>
+</a>
+<!-- Analytics -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-4 py-1 hover:text-primary dark:hover:text-primary-fixed" href="#">
+<span class="material-symbols-outlined mb-1">insights</span>
+<span class="font-label-sm text-label-sm">Analytics</span>
+</a>
+<!-- Insights -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-4 py-1 hover:text-primary dark:hover:text-primary-fixed" href="#">
+<span class="material-symbols-outlined mb-1">lightbulb</span>
+<span class="font-label-sm text-label-sm">Insights</span>
+</a>
+<!-- Settings (Active) -->
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container dark:bg-primary dark:text-on-primary rounded-full px-4 py-1 scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined mb-1">settings</span>
+<span class="font-label-sm text-label-sm">Settings</span>
+</a>
+</nav>
+</body></html>

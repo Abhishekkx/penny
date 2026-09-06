@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Penny - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#f9f9ff",
+                        "on-tertiary": "#ffffff",
+                        "outline": "#6d7a72",
+                        "inverse-on-surface": "#ebf1ff",
+                        "on-surface-variant": "#3d4a42",
+                        "surface-container-low": "#f0f3ff",
+                        "on-primary-fixed": "#002114",
+                        "surface-container": "#e7eefe",
+                        "on-secondary-fixed-variant": "#783200",
+                        "surface-container-high": "#e2e8f8",
+                        "error-container": "#ffdad6",
+                        "primary-container": "#00855d",
+                        "secondary-container": "#fd761a",
+                        "primary-fixed": "#85f8c4",
+                        "tertiary-fixed": "#ffe086",
+                        "on-background": "#151c27",
+                        "secondary-fixed-dim": "#ffb690",
+                        "inverse-primary": "#68dba9",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "background": "#f9f9ff",
+                        "secondary-fixed": "#ffdbca",
+                        "on-surface": "#151c27",
+                        "on-secondary-container": "#5c2400",
+                        "outline-variant": "#bccac0",
+                        "on-tertiary-container": "#4e3e00",
+                        "surface": "#f9f9ff",
+                        "inverse-surface": "#2a313d",
+                        "primary-fixed-dim": "#68dba9",
+                        "primary": "#006948",
+                        "surface-container-highest": "#dce2f3",
+                        "tertiary-container": "#cda721",
+                        "error": "#ba1a1a",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#f5fff7",
+                        "secondary": "#9d4300",
+                        "on-primary-fixed-variant": "#005137",
+                        "on-tertiary-fixed-variant": "#574500",
+                        "surface-variant": "#dce2f3",
+                        "surface-tint": "#006c4a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#341100",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed-dim": "#eac33e",
+                        "tertiary": "#735c00",
+                        "on-tertiary-fixed": "#231b00",
+                        "surface-dim": "#d3daea"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "margin": "20px",
+                        "xs": "4px",
+                        "base": "4px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "gutter": "16px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Manrope"],
+                        "label-md": ["Manrope"],
+                        "body-sm": ["Manrope"],
+                        "headline-lg": ["Manrope"],
+                        "body-lg": ["Manrope"],
+                        "label-sm": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["22px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-sm": ["10px", { "lineHeight": "12px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Custom dark mode base override to match prompt requirements if Tailwind theme doesn't hit the exact hexes */
+        body.dark {
+            background-color: #1F2937;
+            color: #ffffff;
+        }
+        .dark .bg-card-dark {
+            background-color: #374151;
+        }
+        
+        /* Subtle glow for dark mode cards */
+        .dark-card-glow {
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* Glassmorphism utility */
+        .glass-panel {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="dark antialiased bg-[#1F2937] text-white min-h-screen pb-[80px]">
+<!-- TopAppBar (Hidden on md for this layout concept, but included as per instructions if needed, adapted for dark mode) -->
+<header class="hidden md:flex justify-between items-center w-full px-margin h-16 max-w-7xl mx-auto glass-panel sticky top-0 z-40 bg-surface/80 dark:bg-surface-dim/80">
+<div class="flex items-center gap-sm">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="A small, professional portrait photograph of a young woman with dark hair, smiling subtly, shot against a neutral studio background. The lighting is soft and even, typical of a high-quality corporate headshot. The mood is approachable yet professional, matching a premium financial app aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBkqsYKHsQlNWMzldY8DvtLZonxTwUwQ11DtsvV1jNPVfAxjqIKt0wMyBfpxv4O3DLktUNs8CurBQnYm1yXZ8lUBA-AZq5555AIhehxLaguhc5ougZtjaYIsNYibjqDF5jQzsTbpfVwn-9V6GHb-fklfIzPTmvYoW9EktUlns84l1n4bdZnWuFuvFesowwvGVHaufnIPyzRbtejodZR1XTmmzVYryZRuiqzicmfrP-KcHQZ-kvotaeHA"/>
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary dark:text-primary-fixed">Penny</h1>
+</div>
+<button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-primary-container/10 dark:hover:bg-primary-container/20 transition-colors text-primary dark:text-primary-fixed">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</header>
+<!-- Mobile Header Container -->
+<div class="md:hidden flex justify-between items-center px-margin pt-margin pb-sm">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full bg-card-dark flex items-center justify-center overflow-hidden border border-outline-variant/30">
+<img class="w-full h-full object-cover" data-alt="A small, professional portrait photograph of a young woman with dark hair, smiling subtly, shot against a neutral studio background. The lighting is soft and even, typical of a high-quality corporate headshot. The mood is approachable yet professional, matching a premium financial app aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGIPSnzrG76sk75xyHZiDNeSjLLXECew8Lo4ZjbmVCOo5UsFLgyabnusprB2ps_jdh8d4sGUKktGT-_-TD0VtgNmKBfbJfHRerU4JPGVXgluo6bsCg4Sjh7xbt3V28GQUa6pkJiKdsyekTS1dZKL6_aqR2BRY4B_7U_6YsO7pxrtd3ahvGiVjsBnxo4a0IqbDsaKjeNHRnUtmP5pybia7yEroU88o2r9o7PCZf6GSkcEEXuk4RwkYYiA"/>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-outline-variant">Good morning,</p>
+<h2 class="font-body-lg text-body-lg font-semibold text-white">Sarah</h2>
+</div>
+</div>
+<button class="w-10 h-10 rounded-full bg-card-dark flex items-center justify-center text-outline-variant hover:text-white transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+<!-- Main Content Canvas -->
+<main class="max-w-7xl mx-auto px-margin md:px-lg py-sm md:py-lg flex flex-col gap-lg">
+<!-- Total Balance Card (Animated Gradient in Dark Mode) -->
+<section class="relative w-full rounded-xl overflow-hidden p-lg flex flex-col gap-sm shadow-lg dark-card-glow bg-gradient-to-br from-[#006948] to-[#003d2a]">
+<!-- Decorative ambient elements -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary-fixed/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+<div class="relative z-10">
+<div class="flex justify-between items-center mb-xs">
+<span class="font-body-sm text-body-sm text-primary-fixed">Total Net Worth</span>
+<span class="px-2 py-1 bg-white/20 rounded-full font-label-sm text-label-sm text-white flex items-center gap-1 backdrop-blur-sm">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> +2.4%
+                    </span>
+</div>
+<h2 class="font-headline-lg text-[40px] leading-tight font-bold text-white tracking-tight">$124,500.00</h2>
+<div class="mt-lg flex gap-md">
+<button class="flex-1 bg-white text-[#006948] font-body-sm text-body-sm py-2 rounded-lg font-semibold hover:bg-surface-bright transition-colors">
+                        Add Funds
+                    </button>
+<button class="flex-1 bg-black/20 text-white font-body-sm text-body-sm py-2 rounded-lg font-semibold border border-white/30 hover:bg-black/30 transition-colors backdrop-blur-sm">
+                        Transfer
+                    </button>
+</div>
+</div>
+</section>
+<!-- Summary Bento Grid -->
+<section class="grid grid-cols-2 gap-gutter">
+<!-- Income Card -->
+<div class="bg-card-dark p-md rounded-xl dark-card-glow flex flex-col justify-between min-h-[120px]">
+<div class="w-8 h-8 rounded-full bg-primary-container/20 flex items-center justify-center text-primary-fixed mb-sm">
+<span class="material-symbols-outlined text-[18px]">arrow_downward</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-outline-variant mb-xs">Income (Monthly)</p>
+<p class="font-body-lg text-body-lg font-semibold text-white">$8,450.00</p>
+</div>
+</div>
+<!-- Expenses Card -->
+<div class="bg-card-dark p-md rounded-xl dark-card-glow flex flex-col justify-between min-h-[120px]">
+<div class="w-8 h-8 rounded-full bg-secondary-container/20 flex items-center justify-center text-secondary-fixed-dim mb-sm">
+<span class="material-symbols-outlined text-[18px]">arrow_upward</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-outline-variant mb-xs">Expenses (Monthly)</p>
+<p class="font-body-lg text-body-lg font-semibold text-white">$3,210.00</p>
+</div>
+</div>
+</section>
+<!-- Trend Chart Area (Placeholder for actual chart) -->
+<section class="bg-card-dark rounded-xl p-md dark-card-glow flex flex-col gap-md">
+<div class="flex justify-between items-center">
+<h3 class="font-headline-md text-headline-md text-white">Cash Flow</h3>
+<div class="flex bg-[#1F2937] rounded-full p-1 border border-outline-variant/20">
+<button class="px-3 py-1 rounded-full bg-card-dark text-white font-label-sm text-label-sm shadow-sm">1W</button>
+<button class="px-3 py-1 rounded-full text-outline-variant font-label-sm text-label-sm hover:text-white transition-colors">1M</button>
+<button class="px-3 py-1 rounded-full text-outline-variant font-label-sm text-label-sm hover:text-white transition-colors">3M</button>
+</div>
+</div>
+<div class="w-full h-[180px] rounded-lg bg-[#1F2937] relative overflow-hidden border border-outline-variant/10 flex items-end justify-between px-4 pb-4 pt-8">
+<!-- Abstract Chart Representation -->
+<div class="absolute inset-0 bg-gradient-to-t from-primary-fixed/5 to-transparent"></div>
+<!-- Simulated Bars -->
+<div class="w-1/6 h-[40%] bg-outline-variant/20 rounded-t-sm hover:bg-primary/50 transition-colors cursor-pointer"></div>
+<div class="w-1/6 h-[60%] bg-outline-variant/20 rounded-t-sm hover:bg-primary/50 transition-colors cursor-pointer"></div>
+<div class="w-1/6 h-[30%] bg-outline-variant/20 rounded-t-sm hover:bg-primary/50 transition-colors cursor-pointer"></div>
+<div class="w-1/6 h-[80%] bg-primary rounded-t-sm relative group cursor-pointer">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#1F2937] text-white font-label-sm text-label-sm px-2 py-1 rounded border border-outline-variant/30 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">$1.2k</div>
+</div>
+<div class="w-1/6 h-[50%] bg-outline-variant/20 rounded-t-sm hover:bg-primary/50 transition-colors cursor-pointer"></div>
+</div>
+</section>
+<!-- Recent Activity List -->
+<section class="flex flex-col gap-sm">
+<div class="flex justify-between items-center mb-sm">
+<h3 class="font-headline-md text-headline-md text-white">Recent Activity</h3>
+<button class="font-body-sm text-body-sm text-primary-fixed hover:text-primary-fixed-dim transition-colors">See All</button>
+</div>
+<div class="bg-card-dark rounded-xl dark-card-glow overflow-hidden border border-outline-variant/10">
+<!-- Item 1 -->
+<div class="flex items-center justify-between p-md border-b border-outline-variant/10 hover:bg-[#1F2937]/50 transition-colors cursor-pointer">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined text-[20px]">shopping_cart</span>
+</div>
+<div>
+<p class="font-body-sm text-body-sm font-semibold text-white">Whole Foods Market</p>
+<p class="font-label-sm text-label-sm text-outline-variant">Groceries • Today</p>
+</div>
+</div>
+<p class="font-body-sm text-body-sm font-semibold text-white">-$124.50</p>
+</div>
+<!-- Item 2 -->
+<div class="flex items-center justify-between p-md border-b border-outline-variant/10 hover:bg-[#1F2937]/50 transition-colors cursor-pointer">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-[#E5E7EB] flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined text-[20px]">subscriptions</span>
+</div>
+<div>
+<p class="font-body-sm text-body-sm font-semibold text-white">Netflix Subscription</p>
+<p class="font-label-sm text-label-sm text-outline-variant">Entertainment • Yesterday</p>
+</div>
+</div>
+<p class="font-body-sm text-body-sm font-semibold text-white">-$15.99</p>
+</div>
+<!-- Item 3 -->
+<div class="flex items-center justify-between p-md hover:bg-[#1F2937]/50 transition-colors cursor-pointer">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center text-primary-fixed">
+<span class="material-symbols-outlined text-[20px]">account_balance</span>
+</div>
+<div>
+<p class="font-body-sm text-body-sm font-semibold text-white">Salary Deposit</p>
+<p class="font-label-sm text-label-sm text-outline-variant">Income • Oct 15</p>
+</div>
+</div>
+<p class="font-body-sm text-body-sm font-semibold text-primary-fixed">+$4,250.00</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Action Button (FAB) -->
+<button class="fixed bottom-[96px] md:bottom-lg right-lg w-14 h-14 bg-primary text-white rounded-full shadow-lg flex items-center justify-center hover:bg-primary/90 transition-colors z-40 elevation-4">
+<span class="material-symbols-outlined">add</span>
+</button>
+<!-- BottomNavBar (Mobile Only as per guidelines) -->
+<nav class="md:hidden glass-panel bg-surface/80 dark:bg-surface-dim/80 border-t border-outline-variant/30 fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-gutter py-sm rounded-t-xl shadow-lg shadow-primary/5">
+<!-- Dashboard (Active) -->
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container dark:bg-primary dark:text-on-primary rounded-full px-4 py-1 scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-md text-label-md mt-1">Dashboard</span>
+</a>
+<!-- Analytics -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-4 py-1 hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined">insights</span>
+<span class="font-label-md text-label-md mt-1">Analytics</span>
+</a>
+<!-- Insights -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-4 py-1 hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined">lightbulb</span>
+<span class="font-label-md text-label-md mt-1">Insights</span>
+</a>
+<!-- Settings -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-4 py-1 hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md mt-1">Settings</span>
+</a>
+</nav>
+</body></html>
