@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Design system color tokens for Penny - Modern Ultra-Sleek Financial Product
+/// Design system color tokens for Pennora - Modern Ultra-Sleek Financial Product
 /// Inspired by Revolut, Wise, and Apple Wallet
 class AppColors {
   AppColors._();

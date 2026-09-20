@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pennora — Modern Offline Personal Finance & AI Coach</title>
+    <meta name="description" content="Pennora is a modern, privacy-focused offline personal finance tracker and AI budget coach powered by Google Gemini.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #090D16;
+            --card-bg: rgba(22, 30, 46, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --primary-emerald: #10B981;
+            --primary-glow: rgba(16, 185, 129, 0.3);
+            --accent-cyan: #06B6D4;
+            --text-main: #F3F4F6;
+            --text-muted: #9CA3AF;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            width: 100%;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--card-border);
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-emerald), var(--accent-cyan));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #000;
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-left: 1.5rem;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        nav a:hover {
+            color: var(--primary-emerald);
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 1rem;
+            background: radial-gradient(circle at top, rgba(16, 185, 129, 0.12) 0%, transparent 70%);
+            border-radius: 24px;
+            border: 1px solid var(--card-border);
+            margin-bottom: 4rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--primary-emerald);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1.2;
+            margin-bottom: 1.2rem;
+            background: linear-gradient(180deg, #FFFFFF 0%, #D1D5DB 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 650px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.85rem 1.8rem;
+            border-radius: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-emerald), #059669);
+            color: #000;
+            box-shadow: 0 4px 20px var(--primary-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border: 1px solid var(--card-border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 18px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            color: #fff;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        footer {
+            margin-top: auto;
+            border-top: 1px solid var(--card-border);
+            padding: 2rem 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--text-muted);
+            text-decoration: underline;
+        }
+
+        footer a:hover {
+            color: var(--primary-emerald);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="index.html" class="logo">
+                <div class="logo-icon">P</div>
+                Pennora
+            </a>
+            <nav>
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms & Conditions</a>
+                <a href="https://github.com/Abhishekkx/penny" target="_blank">GitHub</a>
+            </nav>
+        </header>
+
+        <section class="hero">
+            <div class="badge">100% Offline & Private</div>
+            <h1>Smart. Private.<br>AI-Powered Finance.</h1>
+            <p class="subtitle">Pennora is an ultra-sleek, privacy-first personal expense tracker featuring local SQLite storage and an on-device AI budget coach powered by Google Gemini.</p>
+            <div class="cta-buttons">
+                <a href="privacy.html" class="btn btn-primary">Read Privacy Policy</a>
+                <a href="terms.html" class="btn btn-secondary">Terms & Conditions</a>
+            </div>
+        </section>
+
+        <div class="grid">
+            <div class="card">
+                <h3>🔒 100% On-Device Data</h3>
+                <p>All financial logs, categories, and settings are stored locally on your device in a SQLite database. Zero external database servers or telemetry.</p>
+            </div>
+            <div class="card">
+                <h3>🤖 Talk to Pocket AI</h3>
+                <p>Receive real-time, personalized financial advice powered by Google Gemini. Your local data is processed directly via HTTPS for instant analysis.</p>
+            </div>
+            <div class="card">
+                <h3>📊 Fluid Analytics</h3>
+                <p>Beautiful Bezier trend charts, financial health scores, essential vs want breakdowns, and automated budget pacing warnings.</p>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 Pennora. Developed by Abhishek. Licensed under MIT.</p>
+            <p style="margin-top: 0.5rem;">
+                <a href="privacy.html">Privacy Policy</a> &bull; 
+                <a href="terms.html">Terms and Conditions</a> &bull; 
+                <a href="https://github.com/Abhishekkx/penny" target="_blank">GitHub Repository</a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

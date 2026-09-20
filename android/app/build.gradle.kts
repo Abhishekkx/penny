@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.penny.app"
+    namespace = "com.abhishekkx.pennora"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
 
@@ -22,7 +22,7 @@ android {
 
     defaultConfig {
         // Application ID for Play Store release
-        applicationId = "com.penny.app"
+        applicationId = "com.abhishekkx.pennora"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion

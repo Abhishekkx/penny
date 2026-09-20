@@ -1,4 +1,4 @@
-package com.penny.app
+package com.abhishekkx.pennora
 
 import io.flutter.embedding.android.FlutterActivity
 

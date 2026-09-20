@@ -229,7 +229,7 @@ class _OnboardingPage1 extends StatelessWidget {
           const SizedBox(height: AppTheme.spaceXl),
 
           Text(
-            'Welcome to Penny',
+            'Welcome to Pennora',
             style: GoogleFonts.plusJakartaSans(
               fontSize: 28,
               fontWeight: FontWeight.w800,
@@ -619,7 +619,7 @@ class _OnboardingPage4SetupState extends ConsumerState<_OnboardingPage4Setup> {
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            'This is how Penny will greet you',
+                            'This is how Pennora will greet you',
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 11,
                               color: AppColors.onSurfaceVariant,
@@ -847,7 +847,7 @@ class _OnboardingPage4SetupState extends ConsumerState<_OnboardingPage4Setup> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Penny will alert you when you approach this limit. Use slider or enter exact amount below.',
+                  'Pennora will alert you when you approach this limit. Use slider or enter exact amount below.',
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 11,
                     color: AppColors.onSurfaceVariant,
@@ -954,7 +954,7 @@ class _OnboardingPage4SetupState extends ConsumerState<_OnboardingPage4Setup> {
                   const SizedBox(width: 8),
                   Text(
                     _isNameValid
-                        ? 'Get Started with Penny'
+                        ? 'Get Started with Pennora'
                         : 'Enter your name to continue',
                     style: GoogleFonts.plusJakartaSans(
                       color: Colors.white,

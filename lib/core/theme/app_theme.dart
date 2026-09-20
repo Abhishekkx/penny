@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
 
-/// App-wide theme configuration for Penny
+/// App-wide theme configuration for Pennora
 /// Typography: Plus Jakarta Sans / Inter
 /// Spacing: 4px baseline grid
 /// Radius: 12px (buttons/inputs), 20px (cards)

@@ -427,7 +427,7 @@ class SettingsScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: AppTheme.spaceSm),
                       Text(
-                        'Penny v1.0.0 • Offline Drift Database',
+                        'Pennora v1.0.0 • Offline Drift Database',
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 12,
                           color: AppColors.onSurfaceVariant,
@@ -1064,7 +1064,7 @@ class SettingsScreen extends ConsumerWidget {
                 ],
               ),
               Text(
-                'By default, Penny matches your phone\'s system theme settings.',
+                'By default, Pennora matches your phone\'s system theme settings.',
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 12,
                   color: AppColors.onSurfaceVariant,

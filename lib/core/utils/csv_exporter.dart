@@ -44,7 +44,7 @@ class CsvExporter {
     final csvContent = generateTransactionsCsv(transactions, currencySymbol);
     final tempDir = await getTemporaryDirectory();
     final fileName =
-        'penny_export_${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}.csv';
+        'pennora_export_${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}.csv';
     final file = File('${tempDir.path}/$fileName');
 
     await file.writeAsString(csvContent);
@@ -52,7 +52,7 @@ class CsvExporter {
     final xFile = XFile(file.path, mimeType: 'text/csv');
     await Share.shareXFiles([
       xFile,
-    ], text: 'Exported Penny Financial Records (CSV)');
+    ], text: 'Exported Pennora Financial Records (CSV)');
 
     return file;
   }

@@ -11,11 +11,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   AppDatabase.instance();
   await QuickNotificationService.initialize();
-  runApp(const ProviderScope(child: PennyApp()));
+  runApp(const ProviderScope(child: PennoraApp()));
 }
 
-class PennyApp extends ConsumerWidget {
-  const PennyApp({super.key});
+class PennoraApp extends ConsumerWidget {
+  const PennoraApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,7 +23,7 @@ class PennyApp extends ConsumerWidget {
     final settingsAsync = ref.watch(settingsProvider);
 
     return MaterialApp(
-      title: 'Penny',
+      title: 'Pennora',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,

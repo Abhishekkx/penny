@@ -8,8 +8,8 @@ class QuickNotificationService {
 
   static const String _prefKey = 'quick_record_notification_enabled';
   static const int _notificationId = 1001;
-  static const String _channelId = 'penny_quick_record_channel';
-  static const String _channelName = 'Penny Quick Record Notification';
+  static const String _channelId = 'pennora_quick_record_channel';
+  static const String _channelName = 'Pennora Quick Record Notification';
   static const String _channelDesc =
       'Persistent notification for recording expenses quickly from device notification area';
 
@@ -113,7 +113,7 @@ class QuickNotificationService {
 
     await _notificationsPlugin.show(
       id: _notificationId,
-      title: 'Penny - Quick Financial Record',
+      title: 'Pennora - Quick Financial Record',
       body: 'Tap here or "+ Record Expense" to log expenditure instantly.',
       notificationDetails: notificationDetails,
       payload: 'quick_record',

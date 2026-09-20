@@ -1,6 +1,6 @@
-# Penny — Premium Offline Personal Finance & AI Coach
+# Pennora — Premium Offline Personal Finance & AI Coach
 
-Penny is a modern, ultra-sleek, privacy-focused personal finance product built for mobile platforms. Inspired by modern fintech UI paradigms (Revolut, Wise, Apple Wallet), Penny provides instant, offline-first expense tracking, intelligent budget pacing, purchase goal milestones, and an on-device Retrieval-Augmented Generation (RAG) financial coach powered by Google Gemini.
+Pennora is a modern, ultra-sleek, privacy-focused personal finance product built for mobile platforms. Inspired by modern fintech UI paradigms (Revolut, Wise, Apple Wallet), Pennora provides instant, offline-first expense tracking, intelligent budget pacing, purchase goal milestones, and an on-device Retrieval-Augmented Generation (RAG) financial coach powered by Google Gemini.
 
 ---
 
@@ -43,7 +43,7 @@ Penny is a modern, ultra-sleek, privacy-focused personal finance product built f
 
 ## Architecture & System Design
 
-Penny follows a decoupled, feature-first architecture layered into presentation, domain, and data components:
+Pennora follows a decoupled, feature-first architecture layered into presentation, domain, and data components:
 
 ```
 lib/
@@ -68,7 +68,7 @@ lib/
 
 ## Retrieval-Augmented Generation (RAG) Architecture
 
-Penny implements an on-device Local RAG pipeline to power its **"Talk to your Pocket"** AI feature. Rather than uploading raw files to external vectors, the application queries its local SQLite database, structures the context, and injects it dynamically into the LLM context window.
+Pennora implements an on-device Local RAG pipeline to power its **"Talk to your Pocket"** AI feature. Rather than uploading raw files to external vectors, the application queries its local SQLite database, structures the context, and injects it dynamically into the LLM context window.
 
 ```mermaid
 sequenceDiagram
@@ -125,7 +125,7 @@ sequenceDiagram
 1. Clone the repository:
    ```bash
    git clone https://github.com/Abhishekkx
-   cd penny
+   cd pennora
    ```
 
 2. Install dependencies:
@@ -151,6 +151,16 @@ sequenceDiagram
 
 ---
 
+## Legal & Google Play Store Documentation
+
+* **Privacy Policy**: [`PRIVACY_POLICY.md`](PRIVACY_POLICY.md) | [Live Web Version](https://abhishekkx.github.io/penny/privacy.html)
+* **Terms & Conditions**: [`TERMS_AND_CONDITIONS.md`](TERMS_AND_CONDITIONS.md) | [Live Web Version](https://abhishekkx.github.io/penny/terms.html)
+* **Play Store Data Safety Guide**: [`PLAY_STORE_DATA_SAFETY.md`](PLAY_STORE_DATA_SAFETY.md)
+* **Play Store Listing Metadata**: [`PLAY_STORE_LISTING.md`](PLAY_STORE_LISTING.md)
+
+---
+
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
+
