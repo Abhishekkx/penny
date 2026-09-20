@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -14,6 +15,7 @@ import '../../../core/widgets/mesh_background.dart';
 import '../../../core/widgets/custom_slider.dart';
 import '../../../core/widgets/progress_milestones.dart';
 import '../../../core/widgets/pressable_scale.dart';
+import '../../../core/widgets/income_manager_card.dart';
 import '../../transactions/presentation/add_transaction_sheet.dart';
 
 class BudgetScreen extends ConsumerStatefulWidget {
@@ -397,6 +399,11 @@ class _BudgetScreenState extends ConsumerState<BudgetScreen> {
                         _buildSavingsGoalCard(context, budget, settingsAsync)
                             .animate()
                             .fadeIn(duration: 400.ms, delay: 80.ms)
+                            .slideY(begin: 0.08, end: 0),
+                        const SizedBox(height: AppTheme.spaceMd),
+                        _buildIncomePortfolioCard(context, settingsAsync)
+                            .animate()
+                            .fadeIn(duration: 400.ms, delay: 100.ms)
                             .slideY(begin: 0.08, end: 0),
                       ],
                     );
@@ -1241,5 +1248,372 @@ class _BudgetScreenState extends ConsumerState<BudgetScreen> {
     if (percent >= 30) return AppColors.primaryEmerald;
     if (percent >= 20) return AppColors.tertiary;
     return AppColors.onSurfaceVariant;
+  }
+
+  void _showIncomeEditModal(BuildContext context, Setting settings) {
+    final symbol = CurrencyHelper.getSymbol(settings.currency);
+    final sources = parseIncomeSources(settings.incomeSources);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) {
+          final isDark = Theme.of(context).brightness == Brightness.dark;
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.85,
+            decoration: BoxDecoration(
+              color: isDark ? AppColors.darkBgStart : Colors.white,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(AppTheme.radiusLg),
+              ),
+              border: Border.all(
+                color: isDark ? AppColors.glassBorderDark : AppColors.cardBorder,
+              ),
+            ),
+            padding: const EdgeInsets.all(AppTheme.spaceLg),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Manage Income Streams',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppTheme.spaceSm),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: IncomeManagerCard(
+                      currencySymbol: symbol,
+                      initialIncomeSources: sources,
+                      initialPriorSpent: settings.priorSpentThisMonth,
+                      initialSavingsBalance: settings.initialSavingsBalance,
+                      onChanged: (updatedSources, totalIncome, priorSpent, savingsBalance, suggestedDaily) async {
+                        final db = ref.read(databaseProvider);
+                        final updatedSettings = settings.copyWith(
+                          monthlyIncome: totalIncome,
+                          incomeSources: jsonEncode(updatedSources.map((e) => e.toJson()).toList()),
+                          priorSpentThisMonth: priorSpent,
+                          initialSavingsBalance: savingsBalance,
+                          updatedAt: DateTime.now(),
+                        );
+                        await db.updateSettings(updatedSettings);
+
+                        final budget = ref.read(budgetProvider).value;
+                        if (budget != null) {
+                          final updatedBudget = budget.copyWith(
+                            dailyLimit: suggestedDaily,
+                            updatedAt: DateTime.now(),
+                          );
+                          await db.updateBudget(updatedBudget);
+                          ref.invalidate(budgetProvider);
+                        }
+                        ref.invalidate(settingsProvider);
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildIncomePortfolioCard(
+    BuildContext context,
+    AsyncValue<Setting> settingsAsync,
+  ) {
+    return settingsAsync.when(
+      data: (settings) {
+        final symbol = CurrencyHelper.getSymbol(settings.currency);
+        List<IncomeSourceItem> sources = parseIncomeSources(settings.incomeSources);
+        if (sources.isEmpty && settings.monthlyIncome > 0) {
+          sources = [
+            IncomeSourceItem(
+              id: 'default',
+              name: 'Primary Salary',
+              amount: settings.monthlyIncome,
+              category: 'salary',
+            ),
+          ];
+        }
+
+        final totalIncome = settings.monthlyIncome > 0
+            ? settings.monthlyIncome
+            : sources.fold(0.0, (sum, s) => sum + s.amount);
+
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+
+        return GlassCard(
+          padding: const EdgeInsets.all(AppTheme.spaceLg),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryEmerald.withValues(alpha: 0.15),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.account_balance_wallet_rounded,
+                          color: AppColors.primaryEmerald,
+                          size: 16,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Income Streams Portfolio',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                  PressableScale(
+                    onTap: () => _showIncomeEditModal(context, settings),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryEmerald.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(AppTheme.radiusFull),
+                        border: Border.all(
+                          color: AppColors.primaryEmerald.withValues(alpha: 0.3),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.tune_rounded,
+                            size: 13,
+                            color: AppColors.primaryEmerald,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            'Manage Streams',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.primaryEmerald,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppTheme.spaceMd),
+
+              if (sources.isEmpty) ...[
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    child: Column(
+                      children: [
+                        Text(
+                          'No income streams configured yet',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 13,
+                            color: AppColors.onSurfaceVariant,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        ElevatedButton.icon(
+                          onPressed: () => _showIncomeEditModal(context, settings),
+                          icon: const Icon(Icons.add, size: 16),
+                          label: const Text('Add Income Source'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ] else ...[
+                ...sources.map((source) {
+                  final share = totalIncome > 0
+                      ? ((source.amount / totalIncome) * 100)
+                      : 0.0;
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? Colors.white.withValues(alpha: 0.04)
+                          : AppColors.gray100,
+                      borderRadius: BorderRadius.circular(AppTheme.radiusDefault),
+                      border: Border.all(
+                        color: isDark
+                            ? Colors.white.withValues(alpha: 0.06)
+                            : AppColors.cardBorder,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 34,
+                          height: 34,
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryEmerald.withValues(alpha: 0.12),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            _getCategoryIcon(source.category),
+                            size: 17,
+                            color: AppColors.primaryEmerald,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                source.name,
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Text(
+                                _getCategoryLabel(source.category),
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 11,
+                                  color: AppColors.onSurfaceVariant,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              '$symbol${source.amount.toStringAsFixed(0)}/mo',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w800,
+                                color: isDark ? Colors.white : AppColors.onSurface,
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 1.5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.primaryEmerald.withValues(alpha: 0.15),
+                                borderRadius: BorderRadius.circular(AppTheme.radiusFull),
+                              ),
+                              child: Text(
+                                '${share.toStringAsFixed(1)}% share',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 9.5,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.primaryEmerald,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+                const SizedBox(height: 6),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryEmerald.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Total Portfolio Monthly Income',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primaryEmerald,
+                        ),
+                      ),
+                      Text(
+                        '$symbol${totalIncome.toStringAsFixed(0)}/mo',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.primaryEmerald,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ],
+          ),
+        );
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+    );
+  }
+
+  IconData _getCategoryIcon(String cat) {
+    switch (cat.toLowerCase()) {
+      case 'salary':
+        return Icons.work_outline_rounded;
+      case 'freelance':
+        return Icons.laptop_mac_rounded;
+      case 'business':
+        return Icons.storefront_rounded;
+      case 'investment':
+        return Icons.trending_up_rounded;
+      case 'rental':
+        return Icons.home_work_outlined;
+      default:
+        return Icons.attach_money_rounded;
+    }
+  }
+
+  String _getCategoryLabel(String cat) {
+    switch (cat.toLowerCase()) {
+      case 'salary':
+        return 'Salary / Job';
+      case 'freelance':
+        return 'Freelancing';
+      case 'business':
+        return 'Side Business';
+      case 'investment':
+        return 'Investments';
+      case 'rental':
+        return 'Rental Income';
+      default:
+        return 'Other Source';
+    }
   }
 }

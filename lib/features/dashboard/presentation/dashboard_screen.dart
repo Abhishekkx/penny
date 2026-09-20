@@ -31,6 +31,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
   late Animation<double> _balanceAnimation;
   SpendingPeriod _selectedPeriod = SpendingPeriod.day;
   int _selectedDayOffset = 0; // 0 = Today, 1 = Yesterday, 2 = 2 days ago, etc.
+  String _selectedSourceId = 'all';
 
   @override
   void initState() {
@@ -181,22 +182,29 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                           data: (transactions) {
                             final totalBalance = _calculateBalance(
                               transactions,
-                              settings.monthlyIncome,
+                              settings,
                             );
                             final totalSpent = _calculateTotalSpent(
                               transactions,
+                              settings,
                             );
                             final totalIncome = _calculateTotalIncome(
                               transactions,
-                              settings.monthlyIncome,
+                              settings,
                             );
 
-                            return _buildHeroCard(
-                              context,
-                              totalBalance,
-                              totalSpent,
-                              totalIncome,
-                              settings.currency,
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildIncomeSourceFilterBar(settings, isDark),
+                                _buildHeroCard(
+                                  context,
+                                  totalBalance,
+                                  totalSpent,
+                                  totalIncome,
+                                  settings.currency,
+                                ),
+                              ],
                             );
                           },
                           loading: () => _buildHeroCard(
@@ -368,6 +376,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                               budget: budget,
                               transactions: transactions,
                               isDark: isDark,
+                              selectedSourceId: _selectedSourceId,
                             );
                           },
                           loading: () => const SizedBox.shrink(),
@@ -393,12 +402,223 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
     );
   }
 
+  Widget _buildIncomeSourceFilterBar(Setting settings, bool isDark) {
+    final sources = parseIncomeSources(settings.incomeSources);
+    if (sources.isEmpty) return const SizedBox.shrink();
+
+    final symbol = CurrencyHelper.getSymbol(settings.currency);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'INCOME STREAM FILTER',
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                color: AppColors.onSurfaceVariant,
+                letterSpacing: 0.8,
+              ),
+            ),
+            if (_selectedSourceId != 'all')
+              GestureDetector(
+                onTap: () {
+                  HapticFeedback.selectionClick();
+                  setState(() => _selectedSourceId = 'all');
+                },
+                child: Text(
+                  'Reset to All',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.primaryEmerald,
+                  ),
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        SizedBox(
+          height: 38,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            children: [
+              _buildSourceChip(
+                id: 'all',
+                label: 'All Sources',
+                amount: settings.monthlyIncome,
+                symbol: symbol,
+                isDark: isDark,
+                icon: Icons.account_balance_wallet_rounded,
+              ),
+              ...sources.map((s) => _buildSourceChip(
+                    id: s.id,
+                    label: s.name,
+                    amount: s.amount,
+                    symbol: symbol,
+                    isDark: isDark,
+                    icon: _getIconForCategoryName(s.category),
+                  )),
+            ],
+          ),
+        ),
+        const SizedBox(height: AppTheme.spaceMd),
+      ],
+    );
+  }
+
+  Widget _buildSourceChip({
+    required String id,
+    required String label,
+    required double amount,
+    required String symbol,
+    required bool isDark,
+    required IconData icon,
+  }) {
+    final isSelected = _selectedSourceId == id;
+    return GestureDetector(
+      onTap: () {
+        HapticFeedback.selectionClick();
+        setState(() => _selectedSourceId = id);
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        margin: const EdgeInsets.only(right: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? AppColors.primaryEmerald
+              : (isDark ? AppColors.darkSurface : AppColors.gray100),
+          borderRadius: BorderRadius.circular(AppTheme.radiusFull),
+          border: Border.all(
+            color: isSelected
+                ? AppColors.primaryEmerald
+                : (isDark
+                    ? Colors.white.withValues(alpha: 0.1)
+                    : AppColors.cardBorder),
+            width: isSelected ? 1.5 : 1,
+          ),
+          boxShadow: isSelected
+              ? AppTheme.ambientGlow(
+                  color: AppColors.primaryEmerald,
+                  opacity: 0.3,
+                )
+              : null,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 14,
+              color: isSelected
+                  ? Colors.white
+                  : (isDark ? Colors.white70 : AppColors.onSurfaceVariant),
+            ),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 12,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                color: isSelected
+                    ? Colors.white
+                    : (isDark ? Colors.white : AppColors.onSurface),
+              ),
+            ),
+            const SizedBox(width: 6),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? Colors.white.withValues(alpha: 0.25)
+                    : AppColors.primaryEmerald.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(AppTheme.radiusFull),
+              ),
+              child: Text(
+                '$symbol${amount.toStringAsFixed(0)}',
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w700,
+                  color: isSelected ? Colors.white : AppColors.primaryEmerald,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  IconData _getIconForCategoryName(String cat) {
+    switch (cat.toLowerCase()) {
+      case 'salary':
+        return Icons.work_outline_rounded;
+      case 'freelance':
+        return Icons.laptop_mac_rounded;
+      case 'business':
+        return Icons.storefront_rounded;
+      case 'investment':
+        return Icons.trending_up_rounded;
+      case 'rental':
+        return Icons.home_work_outlined;
+      default:
+        return Icons.attach_money_rounded;
+    }
+  }
+
+  double _getActiveMonthlyIncome(Setting settings) {
+    if (_selectedSourceId == 'all') return settings.monthlyIncome;
+    final sources = parseIncomeSources(settings.incomeSources);
+    final selectedSource = sources.firstWhere(
+      (s) => s.id == _selectedSourceId,
+      orElse: () => IncomeSourceItem(
+        id: 'all',
+        name: 'All',
+        amount: settings.monthlyIncome,
+      ),
+    );
+    return selectedSource.amount;
+  }
+
+  List<Transaction> _getFilteredTransactions(
+    List<Transaction> transactions,
+    Setting settings,
+  ) {
+    if (_selectedSourceId == 'all') return transactions;
+
+    final sources = parseIncomeSources(settings.incomeSources);
+    final selectedSource = sources.firstWhere(
+      (s) => s.id == _selectedSourceId,
+      orElse: () => IncomeSourceItem(id: 'all', name: 'All', amount: 0),
+    );
+
+    return transactions.where((t) {
+      if (t.type == TransactionType.expense) return true;
+      final noteLower = t.note.toLowerCase();
+      final sourceNameLower = selectedSource.name.toLowerCase();
+      final catLower = selectedSource.category.toLowerCase();
+      return noteLower.contains(sourceNameLower) ||
+          t.category.name.toLowerCase().contains(catLower);
+    }).toList();
+  }
+
   double _calculateBalance(
     List<Transaction> transactions,
-    double monthlyIncome,
+    Setting settings,
   ) {
-    double balance = monthlyIncome;
-    for (final transaction in transactions) {
+    final activeIncome = _getActiveMonthlyIncome(settings);
+    double balance = activeIncome;
+    if (_selectedSourceId == 'all') {
+      balance += settings.initialSavingsBalance;
+      balance -= settings.priorSpentThisMonth;
+    }
+    final filtered = _getFilteredTransactions(transactions, settings);
+    for (final transaction in filtered) {
       if (transaction.type == TransactionType.expense) {
         balance -= transaction.amount;
       } else if (transaction.type == TransactionType.income) {
@@ -408,20 +628,28 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
     return balance;
   }
 
-  double _calculateTotalSpent(List<Transaction> transactions) {
-    return transactions
+  double _calculateTotalSpent(
+    List<Transaction> transactions,
+    Setting settings,
+  ) {
+    final filtered = _getFilteredTransactions(transactions, settings);
+    final transSpent = filtered
         .where((t) => t.type == TransactionType.expense)
         .fold(0.0, (sum, t) => sum + t.amount);
+    return transSpent +
+        (_selectedSourceId == 'all' ? settings.priorSpentThisMonth : 0.0);
   }
 
   double _calculateTotalIncome(
     List<Transaction> transactions,
-    double monthlyIncome,
+    Setting settings,
   ) {
-    final transIncome = transactions
+    final activeIncome = _getActiveMonthlyIncome(settings);
+    final filtered = _getFilteredTransactions(transactions, settings);
+    final transIncome = filtered
         .where((t) => t.type == TransactionType.income)
         .fold(0.0, (sum, t) => sum + t.amount);
-    return monthlyIncome + transIncome;
+    return activeIncome + transIncome;
   }
 
   Widget _buildHeroCard(
@@ -1423,12 +1651,14 @@ class _SavingsTargetCard extends StatefulWidget {
   final Budget? budget;
   final List<Transaction> transactions;
   final bool isDark;
+  final String selectedSourceId;
 
   const _SavingsTargetCard({
     required this.settings,
     required this.budget,
     required this.transactions,
     required this.isDark,
+    this.selectedSourceId = 'all',
   });
 
   @override
@@ -1482,13 +1712,19 @@ class _SavingsTargetCardState extends State<_SavingsTargetCard> {
   Widget build(BuildContext context) {
     final now = DateTime.now();
     final symbol = CurrencyHelper.getSymbol(widget.settings.currency);
-    final income = widget.settings.monthlyIncome;
+
+    double income = widget.settings.monthlyIncome;
+    if (widget.selectedSourceId != 'all') {
+      final sources = parseIncomeSources(widget.settings.incomeSources);
+      final sel = sources.firstWhere(
+        (s) => s.id == widget.selectedSourceId,
+        orElse: () => IncomeSourceItem(id: 'all', name: 'All', amount: income),
+      );
+      income = sel.amount;
+    }
+
     final savingsPercent = widget.budget?.savingsGoalPercent ?? 20.0;
     final expectedSavings = income * (savingsPercent / 100);
-    final maxAllowedExpenses = (income - expectedSavings).clamp(
-      0.0,
-      double.infinity,
-    );
 
     final monthExpenses = widget.transactions
         .where(
@@ -1499,17 +1735,23 @@ class _SavingsTargetCardState extends State<_SavingsTargetCard> {
         )
         .fold<double>(0.0, (sum, t) => sum + t.amount);
 
-    final currentSavings = (income - monthExpenses).clamp(0.0, double.infinity);
-    final isOverspent = income > 0 && monthExpenses > maxAllowedExpenses;
-    final overspentDiff = monthExpenses > maxAllowedExpenses
-        ? (monthExpenses - maxAllowedExpenses)
-        : 0.0;
+    final totalSpentThisMonth = monthExpenses +
+        (widget.selectedSourceId == 'all' ? widget.settings.priorSpentThisMonth : 0.0);
+
+    final netSaved = income - totalSpentThisMonth;
+    final currentSavings = netSaved.clamp(0.0, double.infinity);
 
     final progress = expectedSavings > 0
         ? (currentSavings / expectedSavings).clamp(0.0, 1.0)
         : 0.0;
 
-    final isMissed = _isManualMissed || isOverspent;
+    final achievedPercent = expectedSavings > 0
+        ? ((currentSavings / expectedSavings) * 100).toInt()
+        : 0;
+
+    final bool isAchieved = expectedSavings > 0 && netSaved >= expectedSavings;
+    final bool isOverspent = income > 0 && netSaved <= 0;
+    final bool isMissed = _isManualMissed || isOverspent;
 
     if (income <= 0) {
       return GlassCard(
@@ -1542,7 +1784,7 @@ class _SavingsTargetCardState extends State<_SavingsTargetCard> {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'Set your monthly income to activate real-time savings target tracking.',
+                    'Set your monthly income in Settings to activate crystal-clear savings target tracking.',
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 12,
                       color: AppColors.onSurfaceVariant,
@@ -1554,6 +1796,32 @@ class _SavingsTargetCardState extends State<_SavingsTargetCard> {
           ],
         ),
       );
+    }
+
+    String statusBadgeText;
+    Color statusColor;
+    if (_isManualMissed || isOverspent) {
+      statusBadgeText = 'BEHIND TARGET ⚠️';
+      statusColor = AppColors.error;
+    } else if (isAchieved) {
+      statusBadgeText = 'GOAL ACHIEVED 🎉';
+      statusColor = AppColors.primaryEmerald;
+    } else {
+      statusBadgeText = 'ON TRACK 🟢';
+      statusColor = AppColors.primaryEmerald;
+    }
+
+    String summaryNote;
+    if (isAchieved) {
+      summaryNote =
+          'Awesome! You reached your $symbol${expectedSavings.toStringAsFixed(0)} goal ($achievedPercent% saved).';
+    } else if (netSaved > 0) {
+      final remaining = expectedSavings - netSaved;
+      summaryNote =
+          'Saved $symbol${netSaved.toStringAsFixed(0)} out of $symbol${expectedSavings.toStringAsFixed(0)} target ($achievedPercent%). $symbol${remaining.toStringAsFixed(0)} remaining to hit target.';
+    } else {
+      summaryNote =
+          'Total spending currently equals or exceeds monthly income. Reduce expenditures to build net savings.';
     }
 
     return GlassCard(
@@ -1569,18 +1837,14 @@ class _SavingsTargetCardState extends State<_SavingsTargetCard> {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: isMissed
-                          ? AppColors.error.withValues(alpha: 0.15)
-                          : AppColors.primaryEmerald.withValues(alpha: 0.15),
+                      color: statusColor.withValues(alpha: 0.15),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
                       isMissed
                           ? Icons.warning_amber_rounded
-                          : Icons.savings_outlined,
-                      color: isMissed
-                          ? AppColors.error
-                          : AppColors.primaryEmerald,
+                          : (isAchieved ? Icons.stars_rounded : Icons.savings_outlined),
+                      color: statusColor,
                       size: 18,
                     ),
                   ),
@@ -1591,7 +1855,7 @@ class _SavingsTargetCardState extends State<_SavingsTargetCard> {
                       Text(
                         'Monthly Savings Target',
                         style: GoogleFonts.plusJakartaSans(
-                          fontSize: 14,
+                          fontSize: 15,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -1609,47 +1873,143 @@ class _SavingsTargetCardState extends State<_SavingsTargetCard> {
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 10,
-                  vertical: 4,
+                  vertical: 5,
                 ),
                 decoration: BoxDecoration(
-                  color: isMissed
-                      ? AppColors.error.withValues(alpha: 0.15)
-                      : AppColors.primaryEmerald.withValues(alpha: 0.15),
+                  color: statusColor.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(AppTheme.radiusFull),
                   border: Border.all(
-                    color: isMissed
-                        ? AppColors.error.withValues(alpha: 0.3)
-                        : AppColors.primaryEmerald.withValues(alpha: 0.3),
+                    color: statusColor.withValues(alpha: 0.3),
                   ),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 6,
-                      height: 6,
-                      margin: const EdgeInsets.only(right: 6),
-                      decoration: BoxDecoration(
-                        color: isMissed
-                            ? AppColors.error
-                            : AppColors.primaryEmerald,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    Text(
-                      isMissed ? 'MISSED' : 'ON TRACK',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w800,
-                        color: isMissed
-                            ? AppColors.error
-                            : AppColors.primaryEmerald,
-                      ),
-                    ),
-                  ],
+                child: Text(
+                  statusBadgeText,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w800,
+                    color: statusColor,
+                    letterSpacing: 0.2,
+                  ),
                 ),
               ),
             ],
+          ),
+          const SizedBox(height: AppTheme.spaceMd),
+
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              color: widget.isDark
+                  ? Colors.white.withValues(alpha: 0.04)
+                  : AppColors.gray100,
+              borderRadius: BorderRadius.circular(AppTheme.radiusDefault),
+              border: Border.all(
+                color: widget.isDark
+                    ? Colors.white.withValues(alpha: 0.08)
+                    : AppColors.cardBorder,
+              ),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      Text(
+                        'Monthly Income',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 10.5,
+                          color: AppColors.onSurfaceVariant,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        '$symbol${income.toStringAsFixed(0)}',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: widget.isDark ? Colors.white : AppColors.onSurface,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: 1,
+                  height: 28,
+                  color: widget.isDark
+                      ? Colors.white.withValues(alpha: 0.1)
+                      : AppColors.cardBorder,
+                ),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Text(
+                        'Spent So Far',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 10.5,
+                          color: AppColors.onSurfaceVariant,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        '$symbol${totalSpentThisMonth.toStringAsFixed(0)}',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.secondary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: 1,
+                  height: 28,
+                  color: widget.isDark
+                      ? Colors.white.withValues(alpha: 0.1)
+                      : AppColors.cardBorder,
+                ),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Text(
+                        'Net Saved',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 10.5,
+                          color: AppColors.onSurfaceVariant,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        '$symbol${netSaved.toStringAsFixed(0)}',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w800,
+                          color: netSaved >= 0
+                              ? AppColors.primaryEmerald
+                              : AppColors.error,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 14),
 
@@ -1661,7 +2021,7 @@ class _SavingsTargetCardState extends State<_SavingsTargetCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Target Savings Amount',
+                    'Savings Goal',
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 11,
                       color: AppColors.onSurfaceVariant,
@@ -1670,7 +2030,7 @@ class _SavingsTargetCardState extends State<_SavingsTargetCard> {
                   Text(
                     '$symbol${expectedSavings.toStringAsFixed(0)}',
                     style: GoogleFonts.plusJakartaSans(
-                      fontSize: 22,
+                      fontSize: 20,
                       fontWeight: FontWeight.w800,
                       color: widget.isDark ? Colors.white : AppColors.onSurface,
                     ),
@@ -1684,7 +2044,7 @@ class _SavingsTargetCardState extends State<_SavingsTargetCard> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    'Achieved So Far',
+                    'Achieved ($achievedPercent%)',
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 11,
                       color: AppColors.onSurfaceVariant,
@@ -1695,16 +2055,14 @@ class _SavingsTargetCardState extends State<_SavingsTargetCard> {
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 20,
                       fontWeight: FontWeight.w800,
-                      color: isMissed
-                          ? AppColors.error
-                          : AppColors.primaryEmerald,
+                      color: statusColor,
                     ),
                   ),
                 ],
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
 
           ClipRRect(
             borderRadius: BorderRadius.circular(AppTheme.radiusFull),
@@ -1714,32 +2072,23 @@ class _SavingsTargetCardState extends State<_SavingsTargetCard> {
               backgroundColor: widget.isDark
                   ? Colors.white10
                   : AppColors.gray200,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                isMissed ? AppColors.error : AppColors.primaryEmerald,
-              ),
+              valueColor: AlwaysStoppedAnimation<Color>(statusColor),
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
                 child: Text(
-                  isOverspent
-                      ? 'Overspent budget by $symbol${overspentDiff.toStringAsFixed(0)}'
-                      : (_isManualMissed
-                            ? 'Manually marked as missed'
-                            : 'Pacing nicely to hit monthly target'),
+                  summaryNote,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 11.5,
-                    fontWeight: FontWeight.w600,
-                    color: isMissed
-                        ? AppColors.error
-                        : AppColors.onSurfaceVariant,
+                    fontWeight: FontWeight.w500,
+                    color: statusColor,
+                    height: 1.3,
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               const SizedBox(width: 8),
@@ -1748,7 +2097,7 @@ class _SavingsTargetCardState extends State<_SavingsTargetCard> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 10,
-                    vertical: 4,
+                    vertical: 5,
                   ),
                   decoration: BoxDecoration(
                     color: _isManualMissed
@@ -1759,7 +2108,7 @@ class _SavingsTargetCardState extends State<_SavingsTargetCard> {
                   child: Text(
                     _isManualMissed ? 'Mark On Track' : 'Mark Missed',
                     style: GoogleFonts.plusJakartaSans(
-                      fontSize: 11,
+                      fontSize: 10.5,
                       fontWeight: FontWeight.w700,
                       color: _isManualMissed
                           ? AppColors.primaryEmerald
