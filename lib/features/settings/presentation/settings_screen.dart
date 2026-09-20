@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,6 +12,7 @@ import '../../../core/utils/currency_helper.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/mesh_background.dart';
 import '../../../core/widgets/pressable_scale.dart';
+import '../../../core/widgets/income_manager_card.dart';
 import '../../transactions/presentation/add_transaction_sheet.dart';
 import '../../ai_chat/presentation/talk_to_pocket_screen.dart';
 import '../../../core/utils/csv_exporter.dart';
@@ -858,12 +860,11 @@ class SettingsScreen extends ConsumerWidget {
     WidgetRef ref,
     Setting settings,
   ) {
-    final controller = TextEditingController(
-      text: settings.monthlyIncome > 0
-          ? settings.monthlyIncome.toStringAsFixed(0)
-          : '',
-    );
     final symbol = CurrencyHelper.getSymbol(settings.currency);
+    List<IncomeSourceItem> sources = parseIncomeSources(settings.incomeSources);
+    double priorSpent = settings.priorSpentThisMonth;
+    double savingsBalance = settings.initialSavingsBalance;
+    double calculatedDailyLimit = 1000.0;
 
     showModalBottomSheet(
       context: context,
@@ -872,6 +873,9 @@ class SettingsScreen extends ConsumerWidget {
       builder: (context) {
         final isDark = Theme.of(context).brightness == Brightness.dark;
         return Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.85,
+          ),
           decoration: BoxDecoration(
             color: isDark ? AppColors.darkBgStart : Colors.white,
             borderRadius: const BorderRadius.vertical(
@@ -888,94 +892,103 @@ class SettingsScreen extends ConsumerWidget {
             right: AppTheme.spaceLg,
             top: AppTheme.spaceMd,
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 36,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? AppColors.darkSurfaceHigh
-                        : AppColors.gray300,
-                    borderRadius: BorderRadius.circular(AppTheme.radiusFull),
-                  ),
-                ),
-              ),
-              const SizedBox(height: AppTheme.spaceMd),
-              Text(
-                'Set Monthly Income',
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'Used for budget pacing and savings rate calculation.',
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 12,
-                  color: AppColors.onSurfaceVariant,
-                ),
-              ),
-              const SizedBox(height: AppTheme.spaceLg),
-              TextField(
-                controller: controller,
-                keyboardType: TextInputType.number,
-                autofocus: true,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
-                ),
-                decoration: InputDecoration(
-                  labelText: 'Regular Monthly Income',
-                  prefixText: '$symbol ',
-                  prefixStyle: GoogleFonts.plusJakartaSans(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.primaryEmerald,
-                  ),
-                ),
-              ),
-              const SizedBox(height: AppTheme.spaceLg),
-              PressableScale(
-                onTap: () async {
-                  final amount = double.tryParse(controller.text) ?? 0;
-                  final db = ref.read(databaseProvider);
-                  final updated = settings.copyWith(
-                    monthlyIncome: amount,
-                    updatedAt: DateTime.now(),
-                  );
-                  await db.updateSettings(updated);
-                  ref.invalidate(settingsProvider);
-                  if (context.mounted) {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Monthly income updated')),
-                    );
-                  }
-                },
-                child: Container(
-                  width: double.infinity,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    gradient: AppColors.primaryButtonGradient,
-                    borderRadius: BorderRadius.circular(AppTheme.radiusDefault),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    'Save Income',
-                    style: GoogleFonts.plusJakartaSans(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 36,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: isDark ? AppColors.darkSurfaceHigh : AppColors.gray300,
+                      borderRadius: BorderRadius.circular(AppTheme.radiusFull),
                     ),
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(height: AppTheme.spaceMd),
+                Text(
+                  'Income & Mid-Month Balances',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Manage single/multiple income streams and mid-month carryover balances.',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 12,
+                    color: AppColors.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: AppTheme.spaceMd),
+                IncomeManagerCard(
+                  currencySymbol: symbol,
+                  initialIncomeSources: sources,
+                  initialPriorSpent: priorSpent,
+                  initialSavingsBalance: savingsBalance,
+                  onChanged: (newSources, newTotalIncome, newPriorSpent, newSavingsBalance, suggestedDailyLimit) {
+                    sources = newSources;
+                    priorSpent = newPriorSpent;
+                    savingsBalance = newSavingsBalance;
+                    calculatedDailyLimit = suggestedDailyLimit;
+                  },
+                ),
+                const SizedBox(height: AppTheme.spaceLg),
+                PressableScale(
+                  onTap: () async {
+                    final db = ref.read(databaseProvider);
+                    final totalIncome = sources.fold(0.0, (sum, item) => sum + item.amount);
+                    final updated = settings.copyWith(
+                      monthlyIncome: totalIncome,
+                      incomeSources: jsonEncode(sources.map((e) => e.toJson()).toList()),
+                      priorSpentThisMonth: priorSpent,
+                      initialSavingsBalance: savingsBalance,
+                      updatedAt: DateTime.now(),
+                    );
+                    await db.updateSettings(updated);
+
+                    // Update budget daily limit if budget exists
+                    final currentBudget = await db.getCurrentBudget();
+                    if (currentBudget != null) {
+                      await db.updateBudget(currentBudget.copyWith(
+                        dailyLimit: calculatedDailyLimit,
+                        updatedAt: DateTime.now(),
+                      ));
+                    }
+
+                    ref.invalidate(settingsProvider);
+                    ref.invalidate(budgetProvider);
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Income & balances updated successfully ✅')),
+                      );
+                    }
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      gradient: AppColors.primaryButtonGradient,
+                      borderRadius: BorderRadius.circular(AppTheme.radiusDefault),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Save All Changes',
+                      style: GoogleFonts.plusJakartaSans(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },

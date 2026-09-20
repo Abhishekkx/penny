@@ -106,6 +106,13 @@ class _TalkToPocketScreenState extends ConsumerState<TalkToPocketScreen> {
     final symbol = CurrencyHelper.getSymbol(currency);
     final income = settings?.monthlyIncome ?? 0;
     final name = settings?.userName ?? 'User';
+    final priorSpent = settings?.priorSpentThisMonth ?? 0.0;
+    final initialSavings = settings?.initialSavingsBalance ?? 0.0;
+    final sourcesList = parseIncomeSources(settings?.incomeSources ?? '[]');
+    final sourcesSummary = sourcesList.isEmpty
+        ? 'Single Income: $symbol${income.toStringAsFixed(0)}/month'
+        : sourcesList.map((s) => '- ${s.name} (${s.category.toUpperCase()}): $symbol${s.amount.toStringAsFixed(0)}/month').join('\n');
+
     final rawCsv = CsvExporter.generateTransactionsCsv(transactions, symbol);
 
     double totalNeeds = 0;
@@ -139,17 +146,23 @@ class _TalkToPocketScreenState extends ConsumerState<TalkToPocketScreen> {
 
     final financialContext =
         '''
-USER PROFILE:
+USER PROFILE & INCOME STREAMS:
 - Name: $name
 - Currency: $currency ($symbol)
-- Monthly Income: $symbol${income.toStringAsFixed(0)}
+- Total Combined Monthly Income: $symbol${income.toStringAsFixed(0)}
+- Income Streams Breakdown:
+$sourcesSummary
+
+MID-MONTH & CARRYOVER BALANCES:
+- Spent so far this month (prior to Pennora): $symbol${priorSpent.toStringAsFixed(0)}
+- Starting Savings / Initial Balance: $symbol${initialSavings.toStringAsFixed(0)}
 
 BUDGET & SAVINGS TARGETS:
 - Daily Expense Limit: $symbol${budget?.dailyLimit.toStringAsFixed(0) ?? '0'}/day
 - Target Monthly Savings Rate: ${budget?.savingsGoalPercent.toStringAsFixed(0) ?? '20'}%
 
 REAL-TIME NEED VS WANT RATIO:
-- Total Expenses: $symbol${totalExpenses.toStringAsFixed(0)}
+- Total App Expenses: $symbol${totalExpenses.toStringAsFixed(0)}
 - Essential Needs: $symbol${totalNeeds.toStringAsFixed(0)} ($needPercent% of expenses)
 - Discretionary Wants: $symbol${totalWants.toStringAsFixed(0)} ($wantPercent% of expenses)
 

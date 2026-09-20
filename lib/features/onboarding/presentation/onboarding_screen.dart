@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -11,6 +12,7 @@ import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/mesh_background.dart';
 import '../../../core/widgets/custom_slider.dart';
 import '../../../core/widgets/pressable_scale.dart';
+import '../../../core/widgets/income_manager_card.dart';
 import '../../dashboard/presentation/main_navigation.dart';
 import '../../../core/services/quick_notification_service.dart';
 
@@ -416,12 +418,15 @@ class _OnboardingPage4Setup extends ConsumerStatefulWidget {
 class _OnboardingPage4SetupState extends ConsumerState<_OnboardingPage4Setup> {
   String _selectedCurrency = 'INR'; // default to INR
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _incomeController = TextEditingController();
   final TextEditingController _limitController = TextEditingController(
     text: '1000',
   );
   double _dailyLimit = 1000.0;
   bool _isNameValid = false;
+
+  List<IncomeSourceItem> _incomeSources = [];
+  double _priorSpent = 0.0;
+  double _savingsBalance = 0.0;
 
   static const List<(String, String, String)> _currencies = [
     ('INR', '₹', 'Indian Rupee'),
@@ -450,7 +455,6 @@ class _OnboardingPage4SetupState extends ConsumerState<_OnboardingPage4Setup> {
   void dispose() {
     _nameController.removeListener(_validateName);
     _nameController.dispose();
-    _incomeController.dispose();
     _limitController.dispose();
     super.dispose();
   }
@@ -470,12 +474,15 @@ class _OnboardingPage4SetupState extends ConsumerState<_OnboardingPage4Setup> {
     final db = ref.read(databaseProvider);
     final settings = await db.getSettings();
 
-    final monthlyIncome = double.tryParse(_incomeController.text) ?? 0.0;
+    final totalIncome = _incomeSources.fold(0.0, (sum, item) => sum + item.amount);
 
     final updated = settings.copyWith(
       userName: _nameController.text.trim(),
       currency: _selectedCurrency,
-      monthlyIncome: monthlyIncome,
+      monthlyIncome: totalIncome,
+      incomeSources: jsonEncode(_incomeSources.map((e) => e.toJson()).toList()),
+      priorSpentThisMonth: _priorSpent,
+      initialSavingsBalance: _savingsBalance,
       hasCompletedOnboarding: true,
       updatedAt: DateTime.now(),
     );
@@ -715,85 +722,20 @@ class _OnboardingPage4SetupState extends ConsumerState<_OnboardingPage4Setup> {
 
           const SizedBox(height: AppTheme.spaceMd),
 
-          GlassCard(
-            padding: const EdgeInsets.all(AppTheme.spaceMd),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.account_balance_wallet_outlined,
-                      size: 18,
-                      color: AppColors.tertiary,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Monthly Income',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 7,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.onSurfaceVariant.withValues(
-                          alpha: 0.12,
-                        ),
-                        borderRadius: BorderRadius.circular(
-                          AppTheme.radiusFull,
-                        ),
-                      ),
-                      child: Text(
-                        'Optional',
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.onSurfaceVariant,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Used for budget pacing and savings rate calculation.',
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 11,
-                    color: AppColors.onSurfaceVariant,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: _incomeController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    hintText: 'e.g. 50000',
-                    prefixText: '${_getSelectedCurrencySymbol()} ',
-                    prefixStyle: GoogleFonts.plusJakartaSans(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.primaryEmerald,
-                    ),
-                  ),
-                  onChanged: (value) {
-                    final income = double.tryParse(value) ?? 0;
-                    if (income > 0) {
-                      final newLimit = (income / 30).clamp(50.0, 10000.0);
-                      setState(() {
-                        _dailyLimit = newLimit;
-                        _limitController.text = newLimit.toStringAsFixed(0);
-                      });
-                    }
-                  },
-                ),
-              ],
-            ),
+          IncomeManagerCard(
+            currencySymbol: _getSelectedCurrencySymbol(),
+            initialIncomeSources: _incomeSources,
+            initialPriorSpent: _priorSpent,
+            initialSavingsBalance: _savingsBalance,
+            onChanged: (sources, totalIncome, priorSpent, savingsBalance, suggestedDailyLimit) {
+              setState(() {
+                _incomeSources = sources;
+                _priorSpent = priorSpent;
+                _savingsBalance = savingsBalance;
+                _dailyLimit = suggestedDailyLimit;
+                _limitController.text = suggestedDailyLimit.toStringAsFixed(0);
+              });
+            },
           ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.06, end: 0),
 
           const SizedBox(height: AppTheme.spaceMd),

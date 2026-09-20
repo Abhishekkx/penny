@@ -1,10 +1,21 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 
 part 'database.g.dart';
+
+List<IncomeSourceItem> parseIncomeSources(String jsonStr) {
+  try {
+    final list = jsonDecode(jsonStr) as List?;
+    if (list != null) {
+      return list.map((e) => IncomeSourceItem.fromJson(e as Map<String, dynamic>)).toList();
+    }
+  } catch (_) {}
+  return [];
+}
 
 /// Transaction types
 enum TransactionType { income, expense, investment }
@@ -74,6 +85,9 @@ class Settings extends Table {
   BoolColumn get isDarkMode => boolean().withDefault(const Constant(false))();
   TextColumn get language => text().withDefault(const Constant('en'))();
   RealColumn get monthlyIncome => real().withDefault(const Constant(0))();
+  TextColumn get incomeSources => text().withDefault(const Constant('[]'))();
+  RealColumn get priorSpentThisMonth => real().withDefault(const Constant(0))();
+  RealColumn get initialSavingsBalance => real().withDefault(const Constant(0))();
   BoolColumn get enableAIChat => boolean().withDefault(const Constant(false))();
   BoolColumn get hasCompletedOnboarding =>
       boolean().withDefault(const Constant(false))();
@@ -87,6 +101,34 @@ class ChatMessages extends Table {
   TextColumn get role => text()(); // 'user' or 'model'
   TextColumn get content => text()();
   DateTimeColumn get timestamp => dateTime().withDefault(currentDateAndTime)();
+}
+
+class IncomeSourceItem {
+  final String id;
+  final String name;
+  final double amount;
+  final String category; // salary, freelance, investment, business, rental, other
+
+  IncomeSourceItem({
+    required this.id,
+    required this.name,
+    required this.amount,
+    this.category = 'salary',
+  });
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'amount': amount,
+    'category': category,
+  };
+
+  factory IncomeSourceItem.fromJson(Map<String, dynamic> json) => IncomeSourceItem(
+    id: json['id'] as String? ?? DateTime.now().millisecondsSinceEpoch.toString(),
+    name: json['name'] as String? ?? 'Income Source',
+    amount: (json['amount'] as num? ?? 0.0).toDouble(),
+    category: json['category'] as String? ?? 'other',
+  );
 }
 
 @DriftDatabase(
@@ -103,7 +145,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -122,6 +164,11 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 3) {
         await m.createTable(chatMessages);
+      }
+      if (from < 4) {
+        await m.addColumn(settings, settings.incomeSources);
+        await m.addColumn(settings, settings.priorSpentThisMonth);
+        await m.addColumn(settings, settings.initialSavingsBalance);
       }
     },
   );

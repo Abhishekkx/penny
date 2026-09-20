@@ -1978,6 +1978,42 @@ class $SettingsTable extends Settings with TableInfo<$SettingsTable, Setting> {
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _incomeSourcesMeta = const VerificationMeta(
+    'incomeSources',
+  );
+  @override
+  late final GeneratedColumn<String> incomeSources = GeneratedColumn<String>(
+    'income_sources',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('[]'),
+  );
+  static const VerificationMeta _priorSpentThisMonthMeta =
+      const VerificationMeta('priorSpentThisMonth');
+  @override
+  late final GeneratedColumn<double> priorSpentThisMonth =
+      GeneratedColumn<double>(
+        'prior_spent_this_month',
+        aliasedName,
+        false,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(0),
+      );
+  static const VerificationMeta _initialSavingsBalanceMeta =
+      const VerificationMeta('initialSavingsBalance');
+  @override
+  late final GeneratedColumn<double> initialSavingsBalance =
+      GeneratedColumn<double>(
+        'initial_savings_balance',
+        aliasedName,
+        false,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(0),
+      );
   static const VerificationMeta _enableAIChatMeta = const VerificationMeta(
     'enableAIChat',
   );
@@ -2042,6 +2078,9 @@ class $SettingsTable extends Settings with TableInfo<$SettingsTable, Setting> {
     isDarkMode,
     language,
     monthlyIncome,
+    incomeSources,
+    priorSpentThisMonth,
+    initialSavingsBalance,
     enableAIChat,
     hasCompletedOnboarding,
     hasSeenIncomeNudge,
@@ -2095,6 +2134,33 @@ class $SettingsTable extends Settings with TableInfo<$SettingsTable, Setting> {
         monthlyIncome.isAcceptableOrUnknown(
           data['monthly_income']!,
           _monthlyIncomeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('income_sources')) {
+      context.handle(
+        _incomeSourcesMeta,
+        incomeSources.isAcceptableOrUnknown(
+          data['income_sources']!,
+          _incomeSourcesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prior_spent_this_month')) {
+      context.handle(
+        _priorSpentThisMonthMeta,
+        priorSpentThisMonth.isAcceptableOrUnknown(
+          data['prior_spent_this_month']!,
+          _priorSpentThisMonthMeta,
+        ),
+      );
+    }
+    if (data.containsKey('initial_savings_balance')) {
+      context.handle(
+        _initialSavingsBalanceMeta,
+        initialSavingsBalance.isAcceptableOrUnknown(
+          data['initial_savings_balance']!,
+          _initialSavingsBalanceMeta,
         ),
       );
     }
@@ -2164,6 +2230,18 @@ class $SettingsTable extends Settings with TableInfo<$SettingsTable, Setting> {
         DriftSqlType.double,
         data['${effectivePrefix}monthly_income'],
       )!,
+      incomeSources: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}income_sources'],
+      )!,
+      priorSpentThisMonth: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}prior_spent_this_month'],
+      )!,
+      initialSavingsBalance: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}initial_savings_balance'],
+      )!,
       enableAIChat: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}enable_a_i_chat'],
@@ -2196,6 +2274,9 @@ class Setting extends DataClass implements Insertable<Setting> {
   final bool isDarkMode;
   final String language;
   final double monthlyIncome;
+  final String incomeSources;
+  final double priorSpentThisMonth;
+  final double initialSavingsBalance;
   final bool enableAIChat;
   final bool hasCompletedOnboarding;
   final bool hasSeenIncomeNudge;
@@ -2207,6 +2288,9 @@ class Setting extends DataClass implements Insertable<Setting> {
     required this.isDarkMode,
     required this.language,
     required this.monthlyIncome,
+    required this.incomeSources,
+    required this.priorSpentThisMonth,
+    required this.initialSavingsBalance,
     required this.enableAIChat,
     required this.hasCompletedOnboarding,
     required this.hasSeenIncomeNudge,
@@ -2221,6 +2305,9 @@ class Setting extends DataClass implements Insertable<Setting> {
     map['is_dark_mode'] = Variable<bool>(isDarkMode);
     map['language'] = Variable<String>(language);
     map['monthly_income'] = Variable<double>(monthlyIncome);
+    map['income_sources'] = Variable<String>(incomeSources);
+    map['prior_spent_this_month'] = Variable<double>(priorSpentThisMonth);
+    map['initial_savings_balance'] = Variable<double>(initialSavingsBalance);
     map['enable_a_i_chat'] = Variable<bool>(enableAIChat);
     map['has_completed_onboarding'] = Variable<bool>(hasCompletedOnboarding);
     map['has_seen_income_nudge'] = Variable<bool>(hasSeenIncomeNudge);
@@ -2236,6 +2323,9 @@ class Setting extends DataClass implements Insertable<Setting> {
       isDarkMode: Value(isDarkMode),
       language: Value(language),
       monthlyIncome: Value(monthlyIncome),
+      incomeSources: Value(incomeSources),
+      priorSpentThisMonth: Value(priorSpentThisMonth),
+      initialSavingsBalance: Value(initialSavingsBalance),
       enableAIChat: Value(enableAIChat),
       hasCompletedOnboarding: Value(hasCompletedOnboarding),
       hasSeenIncomeNudge: Value(hasSeenIncomeNudge),
@@ -2255,6 +2345,13 @@ class Setting extends DataClass implements Insertable<Setting> {
       isDarkMode: serializer.fromJson<bool>(json['isDarkMode']),
       language: serializer.fromJson<String>(json['language']),
       monthlyIncome: serializer.fromJson<double>(json['monthlyIncome']),
+      incomeSources: serializer.fromJson<String>(json['incomeSources']),
+      priorSpentThisMonth: serializer.fromJson<double>(
+        json['priorSpentThisMonth'],
+      ),
+      initialSavingsBalance: serializer.fromJson<double>(
+        json['initialSavingsBalance'],
+      ),
       enableAIChat: serializer.fromJson<bool>(json['enableAIChat']),
       hasCompletedOnboarding: serializer.fromJson<bool>(
         json['hasCompletedOnboarding'],
@@ -2273,6 +2370,9 @@ class Setting extends DataClass implements Insertable<Setting> {
       'isDarkMode': serializer.toJson<bool>(isDarkMode),
       'language': serializer.toJson<String>(language),
       'monthlyIncome': serializer.toJson<double>(monthlyIncome),
+      'incomeSources': serializer.toJson<String>(incomeSources),
+      'priorSpentThisMonth': serializer.toJson<double>(priorSpentThisMonth),
+      'initialSavingsBalance': serializer.toJson<double>(initialSavingsBalance),
       'enableAIChat': serializer.toJson<bool>(enableAIChat),
       'hasCompletedOnboarding': serializer.toJson<bool>(hasCompletedOnboarding),
       'hasSeenIncomeNudge': serializer.toJson<bool>(hasSeenIncomeNudge),
@@ -2287,6 +2387,9 @@ class Setting extends DataClass implements Insertable<Setting> {
     bool? isDarkMode,
     String? language,
     double? monthlyIncome,
+    String? incomeSources,
+    double? priorSpentThisMonth,
+    double? initialSavingsBalance,
     bool? enableAIChat,
     bool? hasCompletedOnboarding,
     bool? hasSeenIncomeNudge,
@@ -2298,6 +2401,9 @@ class Setting extends DataClass implements Insertable<Setting> {
     isDarkMode: isDarkMode ?? this.isDarkMode,
     language: language ?? this.language,
     monthlyIncome: monthlyIncome ?? this.monthlyIncome,
+    incomeSources: incomeSources ?? this.incomeSources,
+    priorSpentThisMonth: priorSpentThisMonth ?? this.priorSpentThisMonth,
+    initialSavingsBalance: initialSavingsBalance ?? this.initialSavingsBalance,
     enableAIChat: enableAIChat ?? this.enableAIChat,
     hasCompletedOnboarding:
         hasCompletedOnboarding ?? this.hasCompletedOnboarding,
@@ -2316,6 +2422,15 @@ class Setting extends DataClass implements Insertable<Setting> {
       monthlyIncome: data.monthlyIncome.present
           ? data.monthlyIncome.value
           : this.monthlyIncome,
+      incomeSources: data.incomeSources.present
+          ? data.incomeSources.value
+          : this.incomeSources,
+      priorSpentThisMonth: data.priorSpentThisMonth.present
+          ? data.priorSpentThisMonth.value
+          : this.priorSpentThisMonth,
+      initialSavingsBalance: data.initialSavingsBalance.present
+          ? data.initialSavingsBalance.value
+          : this.initialSavingsBalance,
       enableAIChat: data.enableAIChat.present
           ? data.enableAIChat.value
           : this.enableAIChat,
@@ -2338,6 +2453,9 @@ class Setting extends DataClass implements Insertable<Setting> {
           ..write('isDarkMode: $isDarkMode, ')
           ..write('language: $language, ')
           ..write('monthlyIncome: $monthlyIncome, ')
+          ..write('incomeSources: $incomeSources, ')
+          ..write('priorSpentThisMonth: $priorSpentThisMonth, ')
+          ..write('initialSavingsBalance: $initialSavingsBalance, ')
           ..write('enableAIChat: $enableAIChat, ')
           ..write('hasCompletedOnboarding: $hasCompletedOnboarding, ')
           ..write('hasSeenIncomeNudge: $hasSeenIncomeNudge, ')
@@ -2354,6 +2472,9 @@ class Setting extends DataClass implements Insertable<Setting> {
     isDarkMode,
     language,
     monthlyIncome,
+    incomeSources,
+    priorSpentThisMonth,
+    initialSavingsBalance,
     enableAIChat,
     hasCompletedOnboarding,
     hasSeenIncomeNudge,
@@ -2369,6 +2490,9 @@ class Setting extends DataClass implements Insertable<Setting> {
           other.isDarkMode == this.isDarkMode &&
           other.language == this.language &&
           other.monthlyIncome == this.monthlyIncome &&
+          other.incomeSources == this.incomeSources &&
+          other.priorSpentThisMonth == this.priorSpentThisMonth &&
+          other.initialSavingsBalance == this.initialSavingsBalance &&
           other.enableAIChat == this.enableAIChat &&
           other.hasCompletedOnboarding == this.hasCompletedOnboarding &&
           other.hasSeenIncomeNudge == this.hasSeenIncomeNudge &&
@@ -2382,6 +2506,9 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
   final Value<bool> isDarkMode;
   final Value<String> language;
   final Value<double> monthlyIncome;
+  final Value<String> incomeSources;
+  final Value<double> priorSpentThisMonth;
+  final Value<double> initialSavingsBalance;
   final Value<bool> enableAIChat;
   final Value<bool> hasCompletedOnboarding;
   final Value<bool> hasSeenIncomeNudge;
@@ -2393,6 +2520,9 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
     this.isDarkMode = const Value.absent(),
     this.language = const Value.absent(),
     this.monthlyIncome = const Value.absent(),
+    this.incomeSources = const Value.absent(),
+    this.priorSpentThisMonth = const Value.absent(),
+    this.initialSavingsBalance = const Value.absent(),
     this.enableAIChat = const Value.absent(),
     this.hasCompletedOnboarding = const Value.absent(),
     this.hasSeenIncomeNudge = const Value.absent(),
@@ -2405,6 +2535,9 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
     this.isDarkMode = const Value.absent(),
     this.language = const Value.absent(),
     this.monthlyIncome = const Value.absent(),
+    this.incomeSources = const Value.absent(),
+    this.priorSpentThisMonth = const Value.absent(),
+    this.initialSavingsBalance = const Value.absent(),
     this.enableAIChat = const Value.absent(),
     this.hasCompletedOnboarding = const Value.absent(),
     this.hasSeenIncomeNudge = const Value.absent(),
@@ -2417,6 +2550,9 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
     Expression<bool>? isDarkMode,
     Expression<String>? language,
     Expression<double>? monthlyIncome,
+    Expression<String>? incomeSources,
+    Expression<double>? priorSpentThisMonth,
+    Expression<double>? initialSavingsBalance,
     Expression<bool>? enableAIChat,
     Expression<bool>? hasCompletedOnboarding,
     Expression<bool>? hasSeenIncomeNudge,
@@ -2429,6 +2565,11 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
       if (isDarkMode != null) 'is_dark_mode': isDarkMode,
       if (language != null) 'language': language,
       if (monthlyIncome != null) 'monthly_income': monthlyIncome,
+      if (incomeSources != null) 'income_sources': incomeSources,
+      if (priorSpentThisMonth != null)
+        'prior_spent_this_month': priorSpentThisMonth,
+      if (initialSavingsBalance != null)
+        'initial_savings_balance': initialSavingsBalance,
       if (enableAIChat != null) 'enable_a_i_chat': enableAIChat,
       if (hasCompletedOnboarding != null)
         'has_completed_onboarding': hasCompletedOnboarding,
@@ -2445,6 +2586,9 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
     Value<bool>? isDarkMode,
     Value<String>? language,
     Value<double>? monthlyIncome,
+    Value<String>? incomeSources,
+    Value<double>? priorSpentThisMonth,
+    Value<double>? initialSavingsBalance,
     Value<bool>? enableAIChat,
     Value<bool>? hasCompletedOnboarding,
     Value<bool>? hasSeenIncomeNudge,
@@ -2457,6 +2601,10 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
       isDarkMode: isDarkMode ?? this.isDarkMode,
       language: language ?? this.language,
       monthlyIncome: monthlyIncome ?? this.monthlyIncome,
+      incomeSources: incomeSources ?? this.incomeSources,
+      priorSpentThisMonth: priorSpentThisMonth ?? this.priorSpentThisMonth,
+      initialSavingsBalance:
+          initialSavingsBalance ?? this.initialSavingsBalance,
       enableAIChat: enableAIChat ?? this.enableAIChat,
       hasCompletedOnboarding:
           hasCompletedOnboarding ?? this.hasCompletedOnboarding,
@@ -2486,6 +2634,19 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
     if (monthlyIncome.present) {
       map['monthly_income'] = Variable<double>(monthlyIncome.value);
     }
+    if (incomeSources.present) {
+      map['income_sources'] = Variable<String>(incomeSources.value);
+    }
+    if (priorSpentThisMonth.present) {
+      map['prior_spent_this_month'] = Variable<double>(
+        priorSpentThisMonth.value,
+      );
+    }
+    if (initialSavingsBalance.present) {
+      map['initial_savings_balance'] = Variable<double>(
+        initialSavingsBalance.value,
+      );
+    }
     if (enableAIChat.present) {
       map['enable_a_i_chat'] = Variable<bool>(enableAIChat.value);
     }
@@ -2512,6 +2673,9 @@ class SettingsCompanion extends UpdateCompanion<Setting> {
           ..write('isDarkMode: $isDarkMode, ')
           ..write('language: $language, ')
           ..write('monthlyIncome: $monthlyIncome, ')
+          ..write('incomeSources: $incomeSources, ')
+          ..write('priorSpentThisMonth: $priorSpentThisMonth, ')
+          ..write('initialSavingsBalance: $initialSavingsBalance, ')
           ..write('enableAIChat: $enableAIChat, ')
           ..write('hasCompletedOnboarding: $hasCompletedOnboarding, ')
           ..write('hasSeenIncomeNudge: $hasSeenIncomeNudge, ')
@@ -3823,6 +3987,9 @@ typedef $$SettingsTableCreateCompanionBuilder =
       Value<bool> isDarkMode,
       Value<String> language,
       Value<double> monthlyIncome,
+      Value<String> incomeSources,
+      Value<double> priorSpentThisMonth,
+      Value<double> initialSavingsBalance,
       Value<bool> enableAIChat,
       Value<bool> hasCompletedOnboarding,
       Value<bool> hasSeenIncomeNudge,
@@ -3836,6 +4003,9 @@ typedef $$SettingsTableUpdateCompanionBuilder =
       Value<bool> isDarkMode,
       Value<String> language,
       Value<double> monthlyIncome,
+      Value<String> incomeSources,
+      Value<double> priorSpentThisMonth,
+      Value<double> initialSavingsBalance,
       Value<bool> enableAIChat,
       Value<bool> hasCompletedOnboarding,
       Value<bool> hasSeenIncomeNudge,
@@ -3878,6 +4048,21 @@ class $$SettingsTableFilterComposer
 
   ColumnFilters<double> get monthlyIncome => $composableBuilder(
     column: $table.monthlyIncome,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get incomeSources => $composableBuilder(
+    column: $table.incomeSources,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get priorSpentThisMonth => $composableBuilder(
+    column: $table.priorSpentThisMonth,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get initialSavingsBalance => $composableBuilder(
+    column: $table.initialSavingsBalance,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -3941,6 +4126,21 @@ class $$SettingsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get incomeSources => $composableBuilder(
+    column: $table.incomeSources,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get priorSpentThisMonth => $composableBuilder(
+    column: $table.priorSpentThisMonth,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get initialSavingsBalance => $composableBuilder(
+    column: $table.initialSavingsBalance,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<bool> get enableAIChat => $composableBuilder(
     column: $table.enableAIChat,
     builder: (column) => ColumnOrderings(column),
@@ -3990,6 +4190,21 @@ class $$SettingsTableAnnotationComposer
 
   GeneratedColumn<double> get monthlyIncome => $composableBuilder(
     column: $table.monthlyIncome,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get incomeSources => $composableBuilder(
+    column: $table.incomeSources,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get priorSpentThisMonth => $composableBuilder(
+    column: $table.priorSpentThisMonth,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get initialSavingsBalance => $composableBuilder(
+    column: $table.initialSavingsBalance,
     builder: (column) => column,
   );
 
@@ -4046,6 +4261,9 @@ class $$SettingsTableTableManager
                 Value<bool> isDarkMode = const Value.absent(),
                 Value<String> language = const Value.absent(),
                 Value<double> monthlyIncome = const Value.absent(),
+                Value<String> incomeSources = const Value.absent(),
+                Value<double> priorSpentThisMonth = const Value.absent(),
+                Value<double> initialSavingsBalance = const Value.absent(),
                 Value<bool> enableAIChat = const Value.absent(),
                 Value<bool> hasCompletedOnboarding = const Value.absent(),
                 Value<bool> hasSeenIncomeNudge = const Value.absent(),
@@ -4057,6 +4275,9 @@ class $$SettingsTableTableManager
                 isDarkMode: isDarkMode,
                 language: language,
                 monthlyIncome: monthlyIncome,
+                incomeSources: incomeSources,
+                priorSpentThisMonth: priorSpentThisMonth,
+                initialSavingsBalance: initialSavingsBalance,
                 enableAIChat: enableAIChat,
                 hasCompletedOnboarding: hasCompletedOnboarding,
                 hasSeenIncomeNudge: hasSeenIncomeNudge,
@@ -4070,6 +4291,9 @@ class $$SettingsTableTableManager
                 Value<bool> isDarkMode = const Value.absent(),
                 Value<String> language = const Value.absent(),
                 Value<double> monthlyIncome = const Value.absent(),
+                Value<String> incomeSources = const Value.absent(),
+                Value<double> priorSpentThisMonth = const Value.absent(),
+                Value<double> initialSavingsBalance = const Value.absent(),
                 Value<bool> enableAIChat = const Value.absent(),
                 Value<bool> hasCompletedOnboarding = const Value.absent(),
                 Value<bool> hasSeenIncomeNudge = const Value.absent(),
@@ -4081,6 +4305,9 @@ class $$SettingsTableTableManager
                 isDarkMode: isDarkMode,
                 language: language,
                 monthlyIncome: monthlyIncome,
+                incomeSources: incomeSources,
+                priorSpentThisMonth: priorSpentThisMonth,
+                initialSavingsBalance: initialSavingsBalance,
                 enableAIChat: enableAIChat,
                 hasCompletedOnboarding: hasCompletedOnboarding,
                 hasSeenIncomeNudge: hasSeenIncomeNudge,
